@@ -3,3 +3,9 @@
 public content: field = 1field;
 public security_deposit: u64 = 100000u64;
 public random_salt: field = 0field;
+
+[vote_yes]
+private id: field = 1field;
+
+[vote_no]
+private id: field = 1field;

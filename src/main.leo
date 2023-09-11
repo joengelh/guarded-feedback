@@ -2,26 +2,25 @@
 program guarded_feedback.aleo {
 
     struct Report {
+        id: field,
         block_height: u32,
         content: field,
-        user_hash: field,
-        vote_count: u128,
-        vote_mean: u128,
+        vote_yes: u128,
+        vote_no: u128,
         rejected: bool,
         solved: bool,
         comment: field,
         rewards: u64,
     }
 
-    mapping reports: Report => field;
+    mapping reports: field => Report;
 
     // This stores the salt for every id
     mapping salts: field => field;
 
     record user {
         owner: address,
-        microcredits: u64,
-        secret_salt: field,
+        microcredits: u64
     }
 
     // The transition is most likely run on the clients computer
@@ -33,8 +32,7 @@ program guarded_feedback.aleo {
     ) -> user {
         let new: user = user {
             owner: self.caller,
-            microcredits: security_deposit,
-            secret_salt: random_salt,
+            microcredits: security_deposit
         };
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
@@ -47,9 +45,61 @@ program guarded_feedback.aleo {
     public random_salt: field,)
     {
         // store the random salt
-        
+        Mapping::set(salts, id, random_salt);
         // create the user struct and map it to the id
-        // store the security deposit with the owner of the contract
+        Mapping::set(reports, id, Report {
+            id: id,
+            block_height: block.height,
+            content: content,
+            vote_yes: 0u128,
+            vote_no: 0u128,
+            rejected: false,
+            solved: false,
+            comment: 0field,
+            rewards: 0u64,
+        });
     }
 
+    transition vote_yes(
+        private id: field,
+    ) {
+        return then finalize(id);
+    }
+    finalize vote_yes(
+        public id: field,
+    ) {
+        let report: Report = Mapping::get(reports, id);
+        let new_report: Report = Report {
+            id: report.id,
+            block_height: report.block_height,
+            content: report.content,
+            vote_yes: report.vote_yes + 1u128,
+            vote_no: report.vote_no,
+            rejected: report.rejected,
+            solved: report.solved,
+            comment: report.comment,
+            rewards: report.rewards,
+        };
+    }
+    transition vote_no(
+        private id: field,
+    ) {
+        return then finalize(id);
+    }
+    finalize vote_no(
+        public id: field,
+    ) {
+        let report: Report = Mapping::get(reports, id);
+        let new_report: Report = Report {
+            id: report.id,
+            block_height: report.block_height,
+            content: report.content,
+            vote_yes: report.vote_yes,
+            vote_no: report.vote_no + 1u128,
+            rejected: report.rejected,
+            solved: report.solved,
+            comment: report.comment,
+            rewards: report.rewards,
+        };
+    }
 }
