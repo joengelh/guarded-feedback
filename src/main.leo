@@ -15,8 +15,8 @@ program guarded_feedback.aleo {
 
     mapping reports: Report => field;
 
-    // This stores a public salt the user can chose for every address, to resist hashing collisions and brute forcing.
-    mapping salts: field => address;
+    // This stores the salt for every id
+    mapping salts: field => field;
 
     record user {
         owner: address,
@@ -47,6 +47,7 @@ program guarded_feedback.aleo {
     public random_salt: field,)
     {
         // store the random salt
+        
         // create the user struct and map it to the id
         // store the security deposit with the owner of the contract
     }
