@@ -35,8 +35,8 @@ program guarded_feedback.aleo {
     // The transition is most likely run on the clients computer
     // Key Stretching and a random salt will be used to resist hashmaps and collisions, aswell as brute forcing
     transition submit_report(
-        public content: field,
-        public security_deposit: u64,
+        private content: field,
+        private security_deposit: u64,
         private random_salt: field,
         private sender: user,
     ) -> user {
@@ -87,6 +87,7 @@ program guarded_feedback.aleo {
     finalize vote_yes(
         public id: field,
     ) {
+        assert(Mapping::contains(reports, id) == true);
         let report: Report = Mapping::get(reports, id);
         assert(report.accepted == false && report.rejected == false);
         // Get the voting period as blocks to be required to ahve passed

@@ -39,8 +39,8 @@ mapping settings:
 	value right as u32.public;
 
 function submit_report:
-    input r0 as field.public;
-    input r1 as u64.public;
+    input r0 as field.private;
+    input r1 as u64.private;
     input r2 as field.private;
     input r3 as user.record;
     sub r3.amount r1 into r4;
@@ -70,22 +70,25 @@ function vote_yes:
 
 finalize vote_yes:
     input r0 as field.public;
-    get reports[r0] into r1;
-    is.eq r1.accepted false into r2;
-    is.eq r1.rejected false into r3;
-    and r2 r3 into r4;
-    assert.eq r4 true;
-    get.or_use settings[0u8] 0u32 into r5;
-    add r1.block_height r5 into r6;
-    gte block.height r6 into r7;
-    gt r1.vote_yes r1.vote_no into r8;
-    ternary r8 true false into r9;
-    ternary r8 false true into r10;
-    ternary r7 r9 false into r11;
-    ternary r7 r10 false into r12;
-    add r1.vote_yes 1u128 into r13;
-    cast r1.id r1.security_deposit r1.block_height r1.content r13 r1.vote_no r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
-    set r14 into reports[r0];
+    contains reports[r0] into r1;
+    is.eq r1 true into r2;
+    assert.eq r2 true;
+    get reports[r0] into r3;
+    is.eq r3.accepted false into r4;
+    is.eq r3.rejected false into r5;
+    and r4 r5 into r6;
+    assert.eq r6 true;
+    get.or_use settings[0u8] 0u32 into r7;
+    add r3.block_height r7 into r8;
+    gte block.height r8 into r9;
+    gt r3.vote_yes r3.vote_no into r10;
+    ternary r10 true false into r11;
+    ternary r10 false true into r12;
+    ternary r9 r11 false into r13;
+    ternary r9 r12 false into r14;
+    add r3.vote_yes 1u128 into r15;
+    cast r3.id r3.security_deposit r3.block_height r3.content r15 r3.vote_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
+    set r16 into reports[r0];
 
 
 function vote_no:
