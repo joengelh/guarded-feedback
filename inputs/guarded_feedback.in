@@ -1,5 +1,5 @@
 // The program input for guarded_feedback/src/main.leo
-[submit_report]
+[submit]
 public content: field = 1field;
 public security_deposit: u64 = 100u64;
 public random_salt: field = 0field;
@@ -9,10 +9,10 @@ sender: user = user {
     _nonce: 0group,
 };
 
-[vote_yes]
+[yes]
 private id: field = 1field;
 
-[vote_no]
+[no]
 private id: field = 1field;
 
 [respond]

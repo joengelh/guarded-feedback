@@ -5,8 +5,8 @@ struct Report:
     security_deposit as u64;
     block_height as u32;
     content as field;
-    vote_yes as u128;
-    vote_no as u128;
+    votes_yes as u128;
+    votes_no as u128;
     accepted as boolean;
     rejected as boolean;
     solved as boolean;
@@ -38,7 +38,7 @@ mapping settings:
 	key left as u8.public;
 	value right as u32.public;
 
-function submit_report:
+function submit:
     input r0 as field.private;
     input r1 as u64.private;
     input r2 as field.private;
@@ -50,7 +50,7 @@ function submit_report:
 
     finalize r0 r1 r9 r2;
 
-finalize submit_report:
+finalize submit:
     input r0 as field.public;
     input r1 as u64.public;
     input r2 as field.public;
@@ -63,12 +63,12 @@ finalize submit_report:
     set r6 into reports[r2];
 
 
-function vote_yes:
+function yes:
     input r0 as field.private;
 
     finalize r0;
 
-finalize vote_yes:
+finalize yes:
     input r0 as field.public;
     contains reports[r0] into r1;
     is.eq r1 true into r2;
@@ -81,22 +81,22 @@ finalize vote_yes:
     get.or_use settings[0u8] 0u32 into r7;
     add r3.block_height r7 into r8;
     gte block.height r8 into r9;
-    gt r3.vote_yes r3.vote_no into r10;
+    gt r3.votes_yes r3.votes_no into r10;
     ternary r10 true false into r11;
     ternary r10 false true into r12;
     ternary r9 r11 false into r13;
     ternary r9 r12 false into r14;
-    add r3.vote_yes 1u128 into r15;
-    cast r3.id r3.security_deposit r3.block_height r3.content r15 r3.vote_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
+    add r3.votes_yes 1u128 into r15;
+    cast r3.id r3.security_deposit r3.block_height r3.content r15 r3.votes_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
     set r16 into reports[r0];
 
 
-function vote_no:
+function no:
     input r0 as field.private;
 
     finalize r0;
 
-finalize vote_no:
+finalize no:
     input r0 as field.public;
     get reports[r0] into r1;
     is.eq r1.accepted false into r2;
@@ -106,13 +106,13 @@ finalize vote_no:
     get.or_use settings[0u8] 0u32 into r5;
     add r1.block_height r5 into r6;
     gte block.height r6 into r7;
-    gt r1.vote_yes r1.vote_no into r8;
+    gt r1.votes_yes r1.votes_no into r8;
     ternary r8 true false into r9;
     ternary r8 false true into r10;
     ternary r7 r9 false into r11;
     ternary r7 r10 false into r12;
-    add r1.vote_no 1u128 into r13;
-    cast r1.id r1.security_deposit r1.block_height r1.content r1.vote_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
+    add r1.votes_no 1u128 into r13;
+    cast r1.id r1.security_deposit r1.block_height r1.content r1.votes_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
     set r14 into reports[r0];
 
 
@@ -134,8 +134,8 @@ finalize respond:
     is.eq r4.rejected true into r6;
     or r5 r6 into r7;
     assert.eq r7 true;
-    add r4.vote_no 1u128 into r8;
-    cast r4.id r4.security_deposit r4.block_height r4.content r4.vote_yes r8 r4.accepted r4.rejected r3 r1 r2 r4.claimed into r9 as Report;
+    add r4.votes_no 1u128 into r8;
+    cast r4.id r4.security_deposit r4.block_height r4.content r4.votes_yes r8 r4.accepted r4.rejected r3 r1 r2 r4.claimed into r9 as Report;
     set r9 into reports[r0];
 
 
@@ -164,5 +164,5 @@ finalize claim:
     assert.eq r6 true;
     is.eq r2.security_deposit r1 into r7;
     assert.eq r7 true;
-    cast r2.id r2.security_deposit r2.block_height r2.content r2.vote_yes r2.vote_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
+    cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
     set r8 into reports[r0];

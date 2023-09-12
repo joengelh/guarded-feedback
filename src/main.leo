@@ -6,8 +6,8 @@ program guarded_feedback.aleo {
         security_deposit: u64,
         block_height: u32,
         content: field,
-        vote_yes: u128,
-        vote_no: u128,
+        votes_yes: u128,
+        votes_no: u128,
         accepted: bool,
         rejected: bool,
         solved: bool,
@@ -34,7 +34,7 @@ program guarded_feedback.aleo {
 
     // The transition is most likely run on the clients computer
     // Key Stretching and a random salt will be used to resist hashmaps and collisions, aswell as brute forcing
-    transition submit_report(
+    transition submit(
         private content: field,
         private security_deposit: u64,
         private random_salt: field,
@@ -49,7 +49,7 @@ program guarded_feedback.aleo {
         let id: field = BHP256::hash_to_field(random_salt.add(key_stretching));
         return new then finalize(content, security_deposit, id, random_salt);
     }
-    finalize submit_report(public content: field,
+    finalize submit(public content: field,
     public security_deposit: u64,
     public id: field,
     public random_salt: field,)
@@ -65,8 +65,8 @@ program guarded_feedback.aleo {
             security_deposit: security_deposit,
             block_height: block.height,
             content: content,
-            vote_yes: 0u128,
-            vote_no: 0u128,
+            votes_yes: 0u128,
+            votes_no: 0u128,
             accepted: false,
             rejected: false,
             solved: false,
@@ -79,12 +79,12 @@ program guarded_feedback.aleo {
     // Check if a voting was up for 48 hours, if that is the case, finalize it with the next vote
     // It is assumed that the block time is 16 seconds, however this can be reset by the owner
 
-    transition vote_yes(
+    transition yes(
         private id: field,
     ) {
         return then finalize(id);
     }
-    finalize vote_yes(
+    finalize yes(
         public id: field,
     ) {
         assert(Mapping::contains(reports, id) == true);
@@ -99,7 +99,7 @@ program guarded_feedback.aleo {
         let rejected: bool = false;
         if(current_block_height >= report.block_height + voting_period) 
         {
-            if (report.vote_yes > report.vote_no) {
+            if (report.votes_yes > report.votes_no) {
                 accepted = true;
             }
             else {
@@ -111,8 +111,8 @@ program guarded_feedback.aleo {
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
-            vote_yes: report.vote_yes + 1u128,
-            vote_no: report.vote_no,
+            votes_yes: report.votes_yes + 1u128,
+            votes_no: report.votes_no,
             accepted: accepted,
             rejected: rejected,
             solved: report.solved,
@@ -122,12 +122,12 @@ program guarded_feedback.aleo {
         };
         Mapping::set(reports, id, new_report);
     }
-    transition vote_no(
+    transition no(
         private id: field,
     ) {
         return then finalize(id);
     }
-    finalize vote_no(
+    finalize no(
         public id: field,
     ) {
         let report: Report = Mapping::get(reports, id);
@@ -141,7 +141,7 @@ program guarded_feedback.aleo {
         let rejected: bool = false;
         if(current_block_height >= report.block_height + voting_period) 
         {
-            if (report.vote_yes > report.vote_no) {
+            if (report.votes_yes > report.votes_no) {
                 accepted = true;
             }
             else {
@@ -153,8 +153,8 @@ program guarded_feedback.aleo {
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
-            vote_yes: report.vote_yes,
-            vote_no: report.vote_no + 1u128,
+            votes_yes: report.votes_yes,
+            votes_no: report.votes_no + 1u128,
             accepted: accepted,
             rejected: rejected,
             solved: report.solved,
@@ -187,8 +187,8 @@ program guarded_feedback.aleo {
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
-            vote_yes: report.vote_yes,
-            vote_no: report.vote_no + 1u128,
+            votes_yes: report.votes_yes,
+            votes_no: report.votes_no + 1u128,
             accepted: report.accepted,
             rejected: report.rejected,
             solved: solved,
@@ -228,8 +228,8 @@ program guarded_feedback.aleo {
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
-            vote_yes: report.vote_yes,
-            vote_no: report.vote_no,
+            votes_yes: report.votes_yes,
+            votes_no: report.votes_no,
             accepted: report.accepted,
             rejected: report.rejected,
             solved: report.solved,
