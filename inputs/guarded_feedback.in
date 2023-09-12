@@ -1,11 +1,32 @@
 // The program input for guarded_feedback/src/main.leo
 [submit_report]
 public content: field = 1field;
-public security_deposit: u64 = 100000u64;
+public security_deposit: u64 = 100u64;
 public random_salt: field = 0field;
+sender: user = user {
+    owner: aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr,
+    amount: 100u64,
+    _nonce: 0group,
+};
 
 [vote_yes]
 private id: field = 1field;
 
 [vote_no]
 private id: field = 1field;
+
+[respond]
+public id: field = 1field;
+public content: field = 0field;
+public rewards: u64 = 100u64;
+public solved: bool = true;
+
+[claim]
+private id: field = 1field;
+private salt: field = 0field;
+private amount: u64 = 100u64;
+sender: user = user {
+    owner: aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr,
+    amount: 100u64,
+    _nonce: 0group,
+};
