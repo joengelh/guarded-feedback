@@ -34,8 +34,8 @@ program guarded_feedback_0_1.aleo {
     mapping settings: u8 => Settings;
 
     record user {
-        owner: address,
-        amount: u64,
+        private owner: address,
+        private amount: u64,
     }
 
     transition configure(
@@ -90,7 +90,10 @@ program guarded_feedback_0_1.aleo {
         assert(Mapping::get(settings, 0u8).deposit == security_deposit);
         // update the counter
         let current_counter: u128 = Mapping::get_or_use(counter, 0u8, 0u128);
-        Mapping::set(counter, 0u8, current_counter + 1u128);
+        let next_counter: u128 = current_counter + 1u128;
+        Mapping::set(counter, 0u8, next_counter);
+        // link the current count to the id
+        Mapping::set(counters, next_counter, id);
         // create the user struct and map it to the id
         Mapping::set(reports, id, Report {
             id: id,

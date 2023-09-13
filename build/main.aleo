@@ -95,6 +95,7 @@ finalize submit:
     get.or_use counter[0u8] 0u128 into r6;
     add r6 1u128 into r7;
     set r7 into counter[0u8];
+    set r2 into counters[r7];
     cast r2 r3 r1 block.height r0 0u128 0u128 false false false 0field 0u64 false into r8 as Report;
     set r8 into reports[r2];
 
