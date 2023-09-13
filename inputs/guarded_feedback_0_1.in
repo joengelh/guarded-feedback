@@ -1,4 +1,11 @@
 // The program input for guarded_feedback/src/main.leo
+[reset]
+public security_deposit: u64 = 100u64;
+
+[configure]
+public voting_period: u32 = 1u32;
+public security_deposit: u64 = 100u64;
+
 [submit]
 public content: field = 1field;
 public security_deposit: u64 = 100u64;

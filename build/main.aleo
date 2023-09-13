@@ -1,7 +1,8 @@
-program guarded_feedback.aleo;
+program guarded_feedback_0_1.aleo;
 
 struct Report:
     id as field;
+    salt as field;
     security_deposit as u64;
     block_height as u32;
     content as field;
@@ -14,6 +15,11 @@ struct Report:
     rewards as u64;
     claimed as boolean;
 
+struct Settings:
+    ownedby as address;
+    voting as u32;
+    deposit as u64;
+
 record user:
     owner as address.private;
     amount as u64.private;
@@ -24,19 +30,47 @@ mapping reports:
 	value right as Report.public;
 
 
-mapping salts:
-	key left as field.public;
-	value right as field.public;
-
-
 mapping counter:
 	key left as u8.public;
 	value right as u128.public;
 
 
+mapping counters:
+	key left as u128.public;
+	value right as field.public;
+
+
 mapping settings:
 	key left as u8.public;
-	value right as u32.public;
+	value right as Settings.public;
+
+function configure:
+    input r0 as u32.public;
+    input r1 as u64.public;
+
+    finalize self.caller r0 r1;
+
+finalize configure:
+    input r0 as address.public;
+    input r1 as u32.public;
+    input r2 as u64.public;
+    cast r0 r1 r2 into r3 as Settings;
+    set r3 into settings[0u8];
+
+
+function reset:
+    input r0 as u64.private;
+    cast self.caller r0 into r1 as user.record;
+    output r1 as user.record;
+
+    finalize r0;
+
+finalize reset:
+    input r0 as u64.public;
+    get settings[0u8] into r1;
+    is.eq r1.deposit r0 into r2;
+    assert.eq r2 true;
+
 
 function submit:
     input r0 as field.private;
@@ -55,12 +89,14 @@ finalize submit:
     input r1 as u64.public;
     input r2 as field.public;
     input r3 as field.public;
-    get.or_use counter[0u8] 0u128 into r4;
-    add r4 1u128 into r5;
-    set r5 into counter[0u8];
-    set r3 into salts[r2];
-    cast r2 r1 block.height r0 0u128 0u128 false false false 0field 0u64 false into r6 as Report;
-    set r6 into reports[r2];
+    get settings[0u8] into r4;
+    is.eq r4.deposit r1 into r5;
+    assert.eq r5 true;
+    get.or_use counter[0u8] 0u128 into r6;
+    add r6 1u128 into r7;
+    set r7 into counter[0u8];
+    cast r2 r3 r1 block.height r0 0u128 0u128 false false false 0field 0u64 false into r8 as Report;
+    set r8 into reports[r2];
 
 
 function yes:
@@ -78,8 +114,8 @@ finalize yes:
     is.eq r3.rejected false into r5;
     and r4 r5 into r6;
     assert.eq r6 true;
-    get.or_use settings[0u8] 0u32 into r7;
-    add r3.block_height r7 into r8;
+    get settings[0u8] into r7;
+    add r3.block_height r7.voting into r8;
     gte block.height r8 into r9;
     gt r3.votes_yes r3.votes_no into r10;
     ternary r10 true false into r11;
@@ -87,7 +123,7 @@ finalize yes:
     ternary r9 r11 false into r13;
     ternary r9 r12 false into r14;
     add r3.votes_yes 1u128 into r15;
-    cast r3.id r3.security_deposit r3.block_height r3.content r15 r3.votes_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
+    cast r3.id r3.salt r3.security_deposit r3.block_height r3.content r15 r3.votes_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
     set r16 into reports[r0];
 
 
@@ -103,8 +139,8 @@ finalize no:
     is.eq r1.rejected false into r3;
     and r2 r3 into r4;
     assert.eq r4 true;
-    get.or_use settings[0u8] 0u32 into r5;
-    add r1.block_height r5 into r6;
+    get settings[0u8] into r5;
+    add r1.block_height r5.voting into r6;
     gte block.height r6 into r7;
     gt r1.votes_yes r1.votes_no into r8;
     ternary r8 true false into r9;
@@ -112,7 +148,7 @@ finalize no:
     ternary r7 r9 false into r11;
     ternary r7 r10 false into r12;
     add r1.votes_no 1u128 into r13;
-    cast r1.id r1.security_deposit r1.block_height r1.content r1.votes_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
+    cast r1.id r1.salt r1.security_deposit r1.block_height r1.content r1.votes_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
     set r14 into reports[r0];
 
 
@@ -122,21 +158,25 @@ function respond:
     input r2 as u64.public;
     input r3 as boolean.public;
 
-    finalize r0 r1 r2 r3;
+    finalize r0 r1 r2 r3 self.caller;
 
 finalize respond:
     input r0 as field.public;
     input r1 as field.public;
     input r2 as u64.public;
     input r3 as boolean.public;
-    get reports[r0] into r4;
-    is.eq r4.accepted true into r5;
-    is.eq r4.rejected true into r6;
-    or r5 r6 into r7;
-    assert.eq r7 true;
-    add r4.votes_no 1u128 into r8;
-    cast r4.id r4.security_deposit r4.block_height r4.content r4.votes_yes r8 r4.accepted r4.rejected r3 r1 r2 r4.claimed into r9 as Report;
-    set r9 into reports[r0];
+    input r4 as address.public;
+    get settings[0u8] into r5;
+    is.eq r4 r5.ownedby into r6;
+    assert.eq r6 true;
+    get reports[r0] into r7;
+    is.eq r7.accepted true into r8;
+    is.eq r7.rejected true into r9;
+    or r8 r9 into r10;
+    assert.eq r10 true;
+    add r7.votes_no 1u128 into r11;
+    cast r7.id r7.salt r7.security_deposit r7.block_height r7.content r7.votes_yes r11 r7.accepted r7.rejected r3 r1 r2 r7.claimed into r12 as Report;
+    set r12 into reports[r0];
 
 
 function claim:
@@ -164,5 +204,5 @@ finalize claim:
     assert.eq r6 true;
     is.eq r2.security_deposit r1 into r7;
     assert.eq r7 true;
-    cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
+    cast r2.id r2.salt r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
     set r8 into reports[r0];
