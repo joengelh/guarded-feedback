@@ -1,8 +1,7 @@
-program guarded_feedback_0_1.aleo;
+program guarded_feedback_0_2.aleo;
 
 struct Report:
     id as field;
-    salt as field;
     security_deposit as u64;
     block_height as u32;
     content as field;
@@ -23,6 +22,7 @@ struct Settings:
 record user:
     owner as address.private;
     amount as u64.private;
+    lastsubmit as field.private;
 
 
 mapping reports:
@@ -60,7 +60,7 @@ finalize configure:
 
 function reset:
     input r0 as u64.private;
-    cast self.caller r0 into r1 as user.record;
+    cast self.caller r0 0field into r1 as user.record;
     output r1 as user.record;
 
     finalize r0;
@@ -75,29 +75,28 @@ finalize reset:
 function submit:
     input r0 as field.private;
     input r1 as u64.private;
-    input r2 as field.private;
-    input r3 as user.record;
-    sub r3.amount r1 into r4;
-    cast self.caller r4 into r5 as user.record;
-    hash.bhp256 self.caller into r6 as field;    hash.bhp256 r6 into r7 as field;    add r2 r7 into r8;
-    hash.bhp256 r8 into r9 as field;    output r5 as user.record;
+    input r2 as user.record;
+    hash.bhp256 self.caller into r3 as field;    hash.bhp256 r3 into r4 as field;    add r0 r4 into r5;
+    hash.bhp256 r5 into r6 as field;    sub r2.amount r1 into r7;
+    cast self.caller r7 r6 into r8 as user.record;
+    output r8 as user.record;
+    output r6 as field.private;
 
-    finalize r0 r1 r9 r2;
+    finalize r0 r1 r6;
 
 finalize submit:
     input r0 as field.public;
     input r1 as u64.public;
     input r2 as field.public;
-    input r3 as field.public;
-    get settings[0u8] into r4;
-    is.eq r4.deposit r1 into r5;
-    assert.eq r5 true;
-    get.or_use counter[0u8] 0u128 into r6;
-    add r6 1u128 into r7;
-    set r7 into counter[0u8];
-    set r2 into counters[r7];
-    cast r2 r3 r1 block.height r0 0u128 0u128 false false false 0field 0u64 false into r8 as Report;
-    set r8 into reports[r2];
+    get settings[0u8] into r3;
+    is.eq r3.deposit r1 into r4;
+    assert.eq r4 true;
+    get.or_use counter[0u8] 0u128 into r5;
+    add r5 1u128 into r6;
+    set r6 into counter[0u8];
+    set r2 into counters[r6];
+    cast r2 r1 block.height r0 0u128 0u128 false false false 0field 0u64 false into r7 as Report;
+    set r7 into reports[r2];
 
 
 function yes:
@@ -124,7 +123,7 @@ finalize yes:
     ternary r9 r11 false into r13;
     ternary r9 r12 false into r14;
     add r3.votes_yes 1u128 into r15;
-    cast r3.id r3.salt r3.security_deposit r3.block_height r3.content r15 r3.votes_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
+    cast r3.id r3.security_deposit r3.block_height r3.content r15 r3.votes_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
     set r16 into reports[r0];
 
 
@@ -149,7 +148,7 @@ finalize no:
     ternary r7 r9 false into r11;
     ternary r7 r10 false into r12;
     add r1.votes_no 1u128 into r13;
-    cast r1.id r1.salt r1.security_deposit r1.block_height r1.content r1.votes_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
+    cast r1.id r1.security_deposit r1.block_height r1.content r1.votes_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
     set r14 into reports[r0];
 
 
@@ -176,7 +175,7 @@ finalize respond:
     or r8 r9 into r10;
     assert.eq r10 true;
     add r7.votes_no 1u128 into r11;
-    cast r7.id r7.salt r7.security_deposit r7.block_height r7.content r7.votes_yes r11 r7.accepted r7.rejected r3 r1 r2 r7.claimed into r12 as Report;
+    cast r7.id r7.security_deposit r7.block_height r7.content r7.votes_yes r11 r7.accepted r7.rejected r3 r1 r2 r7.claimed into r12 as Report;
     set r12 into reports[r0];
 
 
@@ -188,7 +187,7 @@ function claim:
     hash.bhp256 self.caller into r4 as field;    hash.bhp256 r4 into r5 as field;    add r1 r5 into r6;
     hash.bhp256 r6 into r7 as field;    assert.eq r7 r0;
     add r3.amount r2 into r8;
-    cast self.caller r8 into r9 as user.record;
+    cast self.caller r8 r3.lastsubmit into r9 as user.record;
     output r9 as user.record;
 
     finalize r0 r2;
@@ -205,5 +204,5 @@ finalize claim:
     assert.eq r6 true;
     is.eq r2.security_deposit r1 into r7;
     assert.eq r7 true;
-    cast r2.id r2.salt r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
+    cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
     set r8 into reports[r0];

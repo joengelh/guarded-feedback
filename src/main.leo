@@ -1,9 +1,7 @@
-// The 'guarded_feedback' program.
-program guarded_feedback_0_1.aleo {
+program guarded_feedback_0_2.aleo {
 
     struct Report {
         id: field,
-        salt: field,
         security_deposit: u64,
         block_height: u32,
         content: field,
@@ -36,6 +34,7 @@ program guarded_feedback_0_1.aleo {
     record user {
         private owner: address,
         private amount: u64,
+        private lastsubmit: field,
     }
 
     transition configure(
@@ -58,6 +57,7 @@ program guarded_feedback_0_1.aleo {
         let new: user = user {
         owner: self.caller,
         amount: security_deposit,
+        lastsubmit: 0field,
         };
         return new then finalize(security_deposit);
     } finalize reset(security_depost: u64) {
@@ -65,26 +65,25 @@ program guarded_feedback_0_1.aleo {
     }
 
     // The transition is most likely run on the clients computer
-    // Key Stretching and a random salt will be used to resist hashmaps and collisions, aswell as brute forcing
+    // Key Stretching and the content will be used to resist hashmaps and collisions, aswell as brute forcing
     transition submit(
         private content: field,
         private security_deposit: u64,
-        private random_salt: field,
         private sender: user,
-    ) -> user {
+    ) -> (user, field) {
+        let intermediary_hash: field = BHP256::hash_to_field(self.caller);
+        let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
+        let id: field = BHP256::hash_to_field(content.add(key_stretching));
         let new: user = user {
             owner: self.caller,
             amount: sender.amount - security_deposit,
+            lastsubmit: id,
         };
-        let intermediary_hash: field = BHP256::hash_to_field(self.caller);
-        let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
-        let id: field = BHP256::hash_to_field(random_salt.add(key_stretching));
-        return new then finalize(content, security_deposit, id, random_salt);
+        return (new, id) then finalize(content, security_deposit, id);
     }
     finalize submit(public content: field,
     public security_deposit: u64,
-    public id: field,
-    public random_salt: field,)
+    public id: field,)
     {
         // check if the security deposit matches the setting
         assert(Mapping::get(settings, 0u8).deposit == security_deposit);
@@ -97,7 +96,6 @@ program guarded_feedback_0_1.aleo {
         // create the user struct and map it to the id
         Mapping::set(reports, id, Report {
             id: id,
-            salt: random_salt,
             security_deposit: security_deposit,
             block_height: block.height,
             content: content,
@@ -144,7 +142,6 @@ program guarded_feedback_0_1.aleo {
         }
         let new_report: Report = Report {
             id: report.id,
-            salt: report.salt,
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
@@ -187,7 +184,6 @@ program guarded_feedback_0_1.aleo {
         }
         let new_report: Report = Report {
             id: report.id,
-            salt: report.salt,
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
@@ -226,7 +222,6 @@ program guarded_feedback_0_1.aleo {
         assert(report.accepted == true || report.rejected == true);
         let new_report: Report = Report {
             id: report.id,
-            salt: report.salt,
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
@@ -244,18 +239,19 @@ program guarded_feedback_0_1.aleo {
 
     transition claim(
         private id: field, 
-        private salt: field, 
+        private content: field, 
         private amount: u64,
         private sender: user,
         ) -> user {
         // create a proof that this person is the original caller
-        // get the salt used originally
+        // get the content used originally
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
-        assert_eq(BHP256::hash_to_field(salt.add(key_stretching)), id);
+        assert_eq(BHP256::hash_to_field(content.add(key_stretching)), id);
         let new: user = user {
             owner: self.caller,
             amount: sender.amount + amount,
+            lastsubmit: sender.lastsubmit,
         };
         //Payout the claimed amount
         return new then finalize(id, amount);
@@ -268,7 +264,6 @@ program guarded_feedback_0_1.aleo {
         assert(report.security_deposit == amount);
         let new_report: Report = Report {
             id: report.id,
-            salt: report.salt,
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
