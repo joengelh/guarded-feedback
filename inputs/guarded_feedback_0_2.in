@@ -15,6 +15,7 @@ sender: user = user {
     lastsubmit: 0field,
     _nonce: 0group,
 };
+private voting: u32 = 100u32;
 
 [yes]
 private id: field = 1field;

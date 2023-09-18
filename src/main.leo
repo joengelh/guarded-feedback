@@ -7,6 +7,7 @@ program guarded_feedback_0_2.aleo {
         content: field,
         votes_yes: u128,
         votes_no: u128,
+        voting: u32,
         accepted: bool,
         rejected: bool,
         solved: bool,
@@ -38,16 +39,16 @@ program guarded_feedback_0_2.aleo {
     }
 
     transition configure(
-        public voting_period: u32,
+        public voting: u32,
         public security_deposit: u64,
     ) {
         let ownedby: address = self.caller;
-        return then finalize(ownedby, voting_period, security_deposit);
+        return then finalize(ownedby, voting, security_deposit);
     }
-    finalize configure(public ownedby: address, public voting_period: u32, security_deposit: u64) {
+    finalize configure(public ownedby: address, public voting: u32, security_deposit: u64) {
         let new: Settings = Settings {
             ownedby: ownedby,
-            voting: voting_period,
+            voting: voting,
             deposit: security_deposit,
         };
         Mapping::set(settings, 0u8, new);
@@ -70,6 +71,7 @@ program guarded_feedback_0_2.aleo {
         private content: field,
         private security_deposit: u64,
         private sender: user,
+        private voting: u32,
     ) -> (user, field) {
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
@@ -79,11 +81,12 @@ program guarded_feedback_0_2.aleo {
             amount: sender.amount - security_deposit,
             lastsubmit: id,
         };
-        return (new, id) then finalize(content, security_deposit, id);
+        return (new, id) then finalize(content, security_deposit, id, voting);
     }
     finalize submit(public content: field,
-    public security_deposit: u64,
-    public id: field,)
+    security_deposit: u64,
+    id: field,
+    voting: u32,)
     {
         // check if the security deposit matches the setting
         assert(Mapping::get(settings, 0u8).deposit == security_deposit);
@@ -101,6 +104,7 @@ program guarded_feedback_0_2.aleo {
             content: content,
             votes_yes: 0u128,
             votes_no: 0u128,
+            voting: block.height + voting,
             accepted: false,
             rejected: false,
             solved: false,
@@ -124,14 +128,12 @@ program guarded_feedback_0_2.aleo {
         assert(Mapping::contains(reports, id) == true);
         let report: Report = Mapping::get(reports, id);
         assert(report.accepted == false && report.rejected == false);
-        // Get the voting period as blocks to be required to ahve passed
-        let voting_period: u32 = Mapping::get(settings, 0u8).voting;
         
         // Check if voting has ended, if it has make the decision
         let current_block_height: u32 = block.height;
         let accepted: bool = false;
         let rejected: bool = false;
-        if(current_block_height >= report.block_height + voting_period) 
+        if(current_block_height >= report.voting) 
         {
             if (report.votes_yes > report.votes_no) {
                 accepted = true;
@@ -147,6 +149,7 @@ program guarded_feedback_0_2.aleo {
             content: report.content,
             votes_yes: report.votes_yes + 1u128,
             votes_no: report.votes_no,
+            voting: report.voting,
             accepted: accepted,
             rejected: rejected,
             solved: report.solved,
@@ -166,14 +169,12 @@ program guarded_feedback_0_2.aleo {
     ) {
         let report: Report = Mapping::get(reports, id);
         assert(report.accepted == false && report.rejected == false);
-        // Get the voting period as blocks to be required to ahve passed
-        let voting_period: u32 = Mapping::get(settings, 0u8).voting;
         
         // Check if voting has ended, if it has make the decision
         let current_block_height: u32 = block.height;
         let accepted: bool = false;
         let rejected: bool = false;
-        if(current_block_height >= report.block_height + voting_period) 
+        if(current_block_height >= report.voting) 
         {
             if (report.votes_yes > report.votes_no) {
                 accepted = true;
@@ -189,6 +190,7 @@ program guarded_feedback_0_2.aleo {
             content: report.content,
             votes_yes: report.votes_yes,
             votes_no: report.votes_no + 1u128,
+            voting: report.voting,
             accepted: accepted,
             rejected: rejected,
             solved: report.solved,
@@ -216,7 +218,6 @@ program guarded_feedback_0_2.aleo {
         public sender: address,
     )
     {
-
         assert(sender == Mapping::get(settings, 0u8).ownedby);
         let report: Report = Mapping::get(reports, id);
         assert(report.accepted == true || report.rejected == true);
@@ -227,6 +228,7 @@ program guarded_feedback_0_2.aleo {
             content: report.content,
             votes_yes: report.votes_yes,
             votes_no: report.votes_no + 1u128,
+            voting: report.voting,
             accepted: report.accepted,
             rejected: report.rejected,
             solved: solved,
@@ -269,6 +271,7 @@ program guarded_feedback_0_2.aleo {
             content: report.content,
             votes_yes: report.votes_yes,
             votes_no: report.votes_no,
+            voting: report.voting,
             accepted: report.accepted,
             rejected: report.rejected,
             solved: report.solved,
