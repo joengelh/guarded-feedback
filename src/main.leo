@@ -1,3 +1,5 @@
+import credits.leo;
+
 program guarded_feedback_0_3.aleo {
 
     struct Report {
@@ -56,14 +58,18 @@ program guarded_feedback_0_3.aleo {
     // The transition is most likely run on the clients computer
     // Key Stretching and the content will be used to resist hashmaps and collisions, aswell as brute forcing
     transition submit(
+        private input: credits.leo/credits,
+        public to: address,
+        public holder: address,
         private content: field,
         private security_deposit: u64,
         private voting: u32,
-    ) -> (field) {
+    ) -> (credits.leo/credits, field) {
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
         let id: field = BHP256::hash_to_field(content.add(key_stretching));
-        return (id) then finalize(content, security_deposit, id, voting);
+        let aleo_change: credits = credits.leo/transfer_private_to_public(input, holder, security_deposit);
+        return (aleo_change) then finalize(content, security_deposit, id, voting);
     }
     finalize submit(public content: field,
     security_deposit: u64,
