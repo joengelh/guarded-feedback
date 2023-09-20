@@ -1,4 +1,4 @@
-program guarded_feedback_0_2.aleo {
+program guarded_feedback_0_3.aleo {
 
     struct Report {
         id: field,
@@ -35,7 +35,6 @@ program guarded_feedback_0_2.aleo {
     record user {
         private owner: address,
         private amount: u64,
-        private lastsubmit: field,
     }
 
     transition configure(
@@ -54,34 +53,17 @@ program guarded_feedback_0_2.aleo {
         Mapping::set(settings, 0u8, new);
     }
 
-    transition reset(security_deposit: u64) -> user {
-        let new: user = user {
-        owner: self.caller,
-        amount: security_deposit,
-        lastsubmit: 0field,
-        };
-        return new then finalize(security_deposit);
-    } finalize reset(security_depost: u64) {
-        assert(Mapping::get(settings, 0u8).deposit == security_depost);
-    }
-
     // The transition is most likely run on the clients computer
     // Key Stretching and the content will be used to resist hashmaps and collisions, aswell as brute forcing
     transition submit(
         private content: field,
         private security_deposit: u64,
-        private sender: user,
         private voting: u32,
-    ) -> (user, field) {
+    ) -> (field) {
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
         let id: field = BHP256::hash_to_field(content.add(key_stretching));
-        let new: user = user {
-            owner: self.caller,
-            amount: sender.amount - security_deposit,
-            lastsubmit: id,
-        };
-        return (new, id) then finalize(content, security_deposit, id, voting);
+        return (id) then finalize(content, security_deposit, id, voting);
     }
     finalize submit(public content: field,
     security_deposit: u64,
@@ -125,6 +107,7 @@ program guarded_feedback_0_2.aleo {
     finalize yes(
         public id: field,
     ) {
+        // Check if report exists
         assert(Mapping::contains(reports, id) == true);
         let report: Report = Mapping::get(reports, id);
         assert(report.accepted == false && report.rejected == false);
@@ -243,7 +226,6 @@ program guarded_feedback_0_2.aleo {
         private id: field, 
         private content: field, 
         private amount: u64,
-        private sender: user,
         ) -> user {
         // create a proof that this person is the original caller
         // get the content used originally
@@ -252,8 +234,7 @@ program guarded_feedback_0_2.aleo {
         assert_eq(BHP256::hash_to_field(content.add(key_stretching)), id);
         let new: user = user {
             owner: self.caller,
-            amount: sender.amount + amount,
-            lastsubmit: sender.lastsubmit,
+            amount: amount,
         };
         //Payout the claimed amount
         return new then finalize(id, amount);

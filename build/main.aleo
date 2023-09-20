@@ -1,4 +1,4 @@
-program guarded_feedback_0_2.aleo;
+program guarded_feedback_0_3.aleo;
 
 struct Report:
     id as field;
@@ -7,6 +7,7 @@ struct Report:
     content as field;
     votes_yes as u128;
     votes_no as u128;
+    voting as u32;
     accepted as boolean;
     rejected as boolean;
     solved as boolean;
@@ -76,27 +77,30 @@ function submit:
     input r0 as field.private;
     input r1 as u64.private;
     input r2 as user.record;
-    hash.bhp256 self.caller into r3 as field;    hash.bhp256 r3 into r4 as field;    add r0 r4 into r5;
-    hash.bhp256 r5 into r6 as field;    sub r2.amount r1 into r7;
-    cast self.caller r7 r6 into r8 as user.record;
-    output r8 as user.record;
-    output r6 as field.private;
+    input r3 as u32.private;
+    hash.bhp256 self.caller into r4 as field;    hash.bhp256 r4 into r5 as field;    add r0 r5 into r6;
+    hash.bhp256 r6 into r7 as field;    sub r2.amount r1 into r8;
+    cast self.caller r8 r7 into r9 as user.record;
+    output r9 as user.record;
+    output r7 as field.private;
 
-    finalize r0 r1 r6;
+    finalize r0 r1 r7 r3;
 
 finalize submit:
     input r0 as field.public;
     input r1 as u64.public;
     input r2 as field.public;
-    get settings[0u8] into r3;
-    is.eq r3.deposit r1 into r4;
-    assert.eq r4 true;
-    get.or_use counter[0u8] 0u128 into r5;
-    add r5 1u128 into r6;
-    set r6 into counter[0u8];
-    set r2 into counters[r6];
-    cast r2 r1 block.height r0 0u128 0u128 false false false 0field 0u64 false into r7 as Report;
-    set r7 into reports[r2];
+    input r3 as u32.public;
+    get settings[0u8] into r4;
+    is.eq r4.deposit r1 into r5;
+    assert.eq r5 true;
+    get.or_use counter[0u8] 0u128 into r6;
+    add r6 1u128 into r7;
+    set r7 into counter[0u8];
+    set r2 into counters[r7];
+    add block.height r3 into r8;
+    cast r2 r1 block.height r0 0u128 0u128 r8 false false false 0field 0u64 false into r9 as Report;
+    set r9 into reports[r2];
 
 
 function yes:
@@ -114,17 +118,15 @@ finalize yes:
     is.eq r3.rejected false into r5;
     and r4 r5 into r6;
     assert.eq r6 true;
-    get settings[0u8] into r7;
-    add r3.block_height r7.voting into r8;
-    gte block.height r8 into r9;
-    gt r3.votes_yes r3.votes_no into r10;
-    ternary r10 true false into r11;
-    ternary r10 false true into r12;
-    ternary r9 r11 false into r13;
-    ternary r9 r12 false into r14;
-    add r3.votes_yes 1u128 into r15;
-    cast r3.id r3.security_deposit r3.block_height r3.content r15 r3.votes_no r13 r14 r3.solved r3.comment r3.rewards r3.claimed into r16 as Report;
-    set r16 into reports[r0];
+    gte block.height r3.voting into r7;
+    gt r3.votes_yes r3.votes_no into r8;
+    ternary r8 true false into r9;
+    ternary r8 false true into r10;
+    ternary r7 r9 false into r11;
+    ternary r7 r10 false into r12;
+    add r3.votes_yes 1u128 into r13;
+    cast r3.id r3.security_deposit r3.block_height r3.content r13 r3.votes_no r3.voting r11 r12 r3.solved r3.comment r3.rewards r3.claimed into r14 as Report;
+    set r14 into reports[r0];
 
 
 function no:
@@ -139,17 +141,15 @@ finalize no:
     is.eq r1.rejected false into r3;
     and r2 r3 into r4;
     assert.eq r4 true;
-    get settings[0u8] into r5;
-    add r1.block_height r5.voting into r6;
-    gte block.height r6 into r7;
-    gt r1.votes_yes r1.votes_no into r8;
-    ternary r8 true false into r9;
-    ternary r8 false true into r10;
-    ternary r7 r9 false into r11;
-    ternary r7 r10 false into r12;
-    add r1.votes_no 1u128 into r13;
-    cast r1.id r1.security_deposit r1.block_height r1.content r1.votes_yes r13 r11 r12 r1.solved r1.comment r1.rewards r1.claimed into r14 as Report;
-    set r14 into reports[r0];
+    gte block.height r1.voting into r5;
+    gt r1.votes_yes r1.votes_no into r6;
+    ternary r6 true false into r7;
+    ternary r6 false true into r8;
+    ternary r5 r7 false into r9;
+    ternary r5 r8 false into r10;
+    add r1.votes_no 1u128 into r11;
+    cast r1.id r1.security_deposit r1.block_height r1.content r1.votes_yes r11 r1.voting r9 r10 r1.solved r1.comment r1.rewards r1.claimed into r12 as Report;
+    set r12 into reports[r0];
 
 
 function respond:
@@ -175,7 +175,7 @@ finalize respond:
     or r8 r9 into r10;
     assert.eq r10 true;
     add r7.votes_no 1u128 into r11;
-    cast r7.id r7.security_deposit r7.block_height r7.content r7.votes_yes r11 r7.accepted r7.rejected r3 r1 r2 r7.claimed into r12 as Report;
+    cast r7.id r7.security_deposit r7.block_height r7.content r7.votes_yes r11 r7.voting r7.accepted r7.rejected r3 r1 r2 r7.claimed into r12 as Report;
     set r12 into reports[r0];
 
 
@@ -204,5 +204,5 @@ finalize claim:
     assert.eq r6 true;
     is.eq r2.security_deposit r1 into r7;
     assert.eq r7 true;
-    cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
+    cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.voting r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
     set r8 into reports[r0];

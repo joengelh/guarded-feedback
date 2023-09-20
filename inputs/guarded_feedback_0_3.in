@@ -1,21 +1,12 @@
 // The program input for guarded_feedback/src/main.leo
-[reset]
-public security_deposit: u64 = 100u64;
-
 [configure]
-public voting_period: u32 = 1u32;
+public voting: u32 = 100000u32;
 public security_deposit: u64 = 100u64;
 
 [submit]
 public content: field = 1field;
 public security_deposit: u64 = 100u64;
-sender: user = user {
-    owner: aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr,
-    amount: 100u64,
-    lastsubmit: 0field,
-    _nonce: 0group,
-};
-private voting: u32 = 100u32;
+public voting: u32 = 100000u32;
 
 [yes]
 private id: field = 1field;
