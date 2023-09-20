@@ -1,5 +1,5 @@
 import credits.aleo;
-program guarded_feedback_0_4.aleo;
+program guarded_feedback_1_0.aleo;
 
 
 struct Report:
@@ -231,7 +231,7 @@ finalize claim:
     assert.eq r5 true;
     is.eq r2.claimed false into r6;
     assert.eq r6 true;
-    is.eq r2.security_deposit r1 into r7;
+    is.eq r2.rewards r1 into r7;
     assert.eq r7 true;
     cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.voting r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r8 as Report;
     set r8 into reports[r0];
