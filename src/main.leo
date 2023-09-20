@@ -59,7 +59,7 @@ program guarded_feedback_0_4.aleo {
         private content: field,
         private security_deposit: u64,
         private voting: u32,
-    ) -> (credits.leo/credits, field) {
+    ) -> (field) {
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
         let id: field = BHP256::hash_to_field(content.add(key_stretching));

@@ -1,6 +1,4 @@
-import credits.aleo;
 program guarded_feedback_0_4.aleo;
-
 
 struct Report:
     id as field;
@@ -61,18 +59,13 @@ finalize configure:
 
 
 function submit:
-    input r0 as credits.aleo/credits.record;
-    input r1 as address.public;
-    input r2 as address.public;
-    input r3 as field.private;
-    input r4 as u64.private;
-    input r5 as u32.private;
-    hash.bhp256 self.caller into r6 as field;    hash.bhp256 r6 into r7 as field;    add r3 r7 into r8;
-    hash.bhp256 r8 into r9 as field;    call credits.aleo/transfer_private_to_public r0 r2 r4 into r10;
-    output r10 as credits.aleo/credits.record;
-    output r9 as field.private;
+    input r0 as field.private;
+    input r1 as u64.private;
+    input r2 as u32.private;
+    hash.bhp256 self.caller into r3 as field;    hash.bhp256 r3 into r4 as field;    add r0 r4 into r5;
+    hash.bhp256 r5 into r6 as field;    output r6 as field.private;
 
-    finalize r3 r4 r9 r5;
+    finalize r0 r1 r6 r2;
 
 finalize submit:
     input r0 as field.public;
