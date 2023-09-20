@@ -139,7 +139,7 @@ program guarded_feedback_0_5.aleo {
     transition claim(
         private id: field, 
         private content: field, 
-        private amount: u64,
+        private rewards: u64,
         ) -> user {
         // create a proof that this person is the original caller
         // get the content used originally
@@ -148,16 +148,16 @@ program guarded_feedback_0_5.aleo {
         assert_eq(BHP256::hash_to_field(content.add(key_stretching)), id);
         let new: user = user {
             owner: self.caller,
-            amount: amount,
+            amount: rewards,
         };
         //Payout the claimed amount
-        return new then finalize(id, amount);
+        return new then finalize(id, rewards);
     }
-    finalize claim(public id: field, public amount: u64)
+    finalize claim(public id: field, public rewards: u64)
     {
         let report: Report = Mapping::get(reports, id);
         assert(report.claimed == false);
-        assert(report.security_deposit == amount);
+        assert(report.rewards == rewards);
         let new_report: Report = Report {
             id: report.id,
             security_deposit: report.security_deposit,

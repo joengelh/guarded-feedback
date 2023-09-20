@@ -17,4 +17,4 @@ public solved: bool = true;
 [claim]
 private id: field = 1field;
 private content: field = 0field;
-private amount: u64 = 100u64;
+private rewards: u64 = 100u64;

@@ -124,7 +124,7 @@ finalize claim:
     get reports[r0] into r2;
     is.eq r2.claimed false into r3;
     assert.eq r3 true;
-    is.eq r2.security_deposit r1 into r4;
+    is.eq r2.rewards r1 into r4;
     assert.eq r4 true;
     cast r2.id r2.security_deposit r2.block_height r2.content r2.votes_yes r2.votes_no r2.voting r2.accepted r2.rejected r2.solved r2.comment r2.rewards true into r5 as Report;
     set r5 into reports[r0];
