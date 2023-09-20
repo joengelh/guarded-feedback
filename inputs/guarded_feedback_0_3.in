@@ -4,7 +4,6 @@ public voting: u32 = 100000u32;
 public security_deposit: u64 = 100u64;
 
 [submit]
-
 private input: credits = credits {
     owner: address = aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr,
     microcredits: u64 = 100u64,
@@ -31,9 +30,3 @@ public solved: bool = true;
 private id: field = 1field;
 private content: field = 0field;
 private amount: u64 = 100u64;
-sender: user = user {
-    owner: aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr,
-    amount: 100u64,
-    lastsubmit: 0field,
-    _nonce: 0group,
-};
