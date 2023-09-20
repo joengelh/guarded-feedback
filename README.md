@@ -21,22 +21,76 @@ leo run configure [""]
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-at1vus62lnx8gyrprs80a0eavtq3uzq959eyjme4vdjsdddgy33fspsgkq833
+at1su7zn8rnf629pjxn6f2hyv0ww2eyny8kwzpgdmqcj80awul5tvxqtyfkpy
 
 configure:
-at1dhg833mw9ynvt36jekvj3dqqtt8pgql6299ckpr7ep6atgu6ds8qfuqylr
-
-reset:
-at1k9w5uhlxv20s26gquq6u44c59ltuyvsa74qcw577yfqt9g3xu59scfks6p
+["100000u32", "100u64"]
+at1zcq642054cj98su36t22g79k3whsw3ttywywg4qzcczgx6yqjvxszvxqrd
 
 submit:
-["1field","100u64","{owner: aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y.private,amount: 100u64.private,lastsubmit: 0field.private,_nonce:7774982171151608203396393866068876340718764748266590473492521366199767423222group.public}","100000u32"]
 
-tx:
+input = ["1field","100u64","100000u32"]
+tx = at1en3cq6x7npycs6eenrt7c3u6wv0t4rlxgdupas243m80qwgpzszqczx425
+output = 6299058510241351640367114846012269074869620680143172774364172560696649935347field
+state = {
+id: 6299058510241351640367114846012269074869620680143172774364172560696649935347field,
+security_deposit: 100u64,
+block_height: 620767u32,
+content: 1field,
+votes_yes: 0u128,
+votes_no: 0u128,
+voting: 720767u32,
+accepted: false,
+rejected: false,
+solved: false,
+comment: 0field,
+rewards: 0u64,
+claimed: false
+}
+
+vote_yes:
+
+input = ["6299058510241351640367114846012269074869620680143172774364172560696649935347field"]
+tx = at1tng508pz0v04w0ttc7ra86tsg48ktk0gkqf7l0neh7duyulwwuyssryd5y
+state = {
+id: 6299058510241351640367114846012269074869620680143172774364172560696649935347field,
+security_deposit: 100u64,
+block_height: 620767u32,
+content: 1field,
+votes_yes: 1u128,
+votes_no: 0u128,
+voting: 720767u32,
+accepted: false,
+rejected: false,
+solved: false,
+comment: 0field,
+rewards: 0u64,
+claimed: false
+}
+
+vote_no:
+
+input = ["6299058510241351640367114846012269074869620680143172774364172560696649935347field"]
+tx = at1277p40jh5p7yfaa9ptnyqagnx7svt7ju48gerdwhye2mlv6mrqysgqfjdt
+state = {
+id: 6299058510241351640367114846012269074869620680143172774364172560696649935347field,
+security_deposit: 100u64,
+block_height: 620767u32,
+content: 1field,
+votes_yes: 1u128,
+votes_no: 1u128,
+voting: 720767u32,
+accepted: false,
+rejected: false,
+solved: false,
+comment: 0field,
+rewards: 0u64,
+claimed: false
+}
 
 respond:
 
-vote:
+claim:
 
 ## TODO
 

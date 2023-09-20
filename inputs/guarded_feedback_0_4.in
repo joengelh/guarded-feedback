@@ -8,12 +8,6 @@ public content: field = 1field;
 public security_deposit: u64 = 100u64;
 public voting: u32 = 100000u32;
 
-[yes]
-private id: field = 1field;
-
-[no]
-private id: field = 1field;
-
 [respond]
 public id: field = 1field;
 public content: field = 0field;

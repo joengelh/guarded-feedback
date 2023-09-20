@@ -99,126 +99,6 @@ program guarded_feedback_0_4.aleo {
     // Check if a voting was up for 48 hours, if that is the case, finalize it with the next vote
     // It is assumed that the block time is 16 seconds, however this can be reset by the owner
 
-    transition yes(
-        private id: field,
-    ) {
-        return then finalize(id);
-    }
-    finalize yes(
-        public id: field,
-    ) {
-        // Check if report exists
-        assert(Mapping::contains(reports, id) == true);
-        // Get the current state
-        let report: Report = Mapping::get(reports, id);
-        // Check voting is stil open
-        assert(report.accepted == false && report.rejected == false);
-        // Update voting
-        report = count_voting(report, true);
-        // Check if voting has ended, if it has make the decision
-        let current_block_height: u32 = block.height;
-        if (check_close_voting(current_block_height, report.voting)) {
-            report = close_voting(report);
-        }
-        Mapping::set(reports, id, report);
-    }
-
-    transition no(
-        private id: field,
-    ) {
-        return then finalize(id);
-    }
-    finalize no(
-        public id: field,
-    ) {
-        // Check if report exists
-        assert(Mapping::contains(reports, id) == true);
-        // Get the current state
-        let report: Report = Mapping::get(reports, id);
-        // Check voting is stil open
-        assert(report.accepted == false && report.rejected == false);
-        // Update voting
-        report = count_voting(report, false);
-        // Check if voting has ended, if it has make the decision
-        let current_block_height: u32 = block.height;
-        if (check_close_voting(current_block_height, report.voting)) {
-            report = close_voting(report);
-        }
-        Mapping::set(reports, id, report);
-    }
-
-    inline count_voting(
-        report: Report,
-        vote: bool,
-    ) -> Report {
-        let votes_yes: u128 = report.votes_yes;
-        let votes_no: u128 = report.votes_no;
-        if (vote) {
-            votes_yes += 1u128;
-        }
-        else {
-            votes_no += 1u128;
-        }
-        let new_report: Report = Report {
-            id: report.id,
-            security_deposit: report.security_deposit,
-            block_height: report.block_height,
-            content: report.content,
-            votes_yes: votes_yes,
-            votes_no: votes_no,
-            voting: report.voting,
-            accepted: report.accepted,
-            rejected: report.rejected,
-            solved: report.solved,
-            comment: report.comment,
-            rewards: report.rewards,
-            claimed: report.claimed,
-        };
-        return new_report;
-    }
-
-    inline check_close_voting(
-        current_block_height: u32, 
-        voting: u32,
-    ) -> bool {
-        if(current_block_height >= voting) 
-        {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    inline close_voting(report: Report) -> Report {
-        let accepted: bool = false;
-        let rejected: bool = false;
-
-        if (report.votes_yes > report.votes_no) {
-            accepted = true;
-        }
-        else {
-            rejected = true;
-        }
-
-        let new_report: Report = Report {
-            id: report.id,
-            security_deposit: report.security_deposit,
-            block_height: report.block_height,
-            content: report.content,
-            votes_yes: report.votes_yes,
-            votes_no: report.votes_no,
-            voting: report.voting,
-            accepted: accepted,
-            rejected: rejected,
-            solved: report.solved,
-            comment: report.comment,
-            rewards: report.rewards,
-            claimed: report.claimed,
-        };
-        return new_report;
-    }
-
     transition respond(
         public id: field,
         public comment: field,
@@ -238,7 +118,6 @@ program guarded_feedback_0_4.aleo {
     {
         assert(sender == Mapping::get(settings, 0u8).ownedby);
         let report: Report = Mapping::get(reports, id);
-        assert(report.accepted == true || report.rejected == true);
         let new_report: Report = Report {
             id: report.id,
             security_deposit: report.security_deposit,
@@ -277,7 +156,6 @@ program guarded_feedback_0_4.aleo {
     finalize claim(public id: field, public amount: u64)
     {
         let report: Report = Mapping::get(reports, id);
-        assert(report.accepted == true || report.rejected == true);
         assert(report.claimed == false);
         assert(report.security_deposit == amount);
         let new_report: Report = Report {
