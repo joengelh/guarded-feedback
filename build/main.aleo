@@ -1,4 +1,6 @@
+import credits.aleo;
 program guarded_feedback_0_3.aleo;
+
 
 struct Report:
     id as field;
@@ -23,7 +25,6 @@ struct Settings:
 record user:
     owner as address.private;
     amount as u64.private;
-    lastsubmit as field.private;
 
 
 mapping reports:
@@ -59,32 +60,19 @@ finalize configure:
     set r3 into settings[0u8];
 
 
-function reset:
-    input r0 as u64.private;
-    cast self.caller r0 0field into r1 as user.record;
-    output r1 as user.record;
-
-    finalize r0;
-
-finalize reset:
-    input r0 as u64.public;
-    get settings[0u8] into r1;
-    is.eq r1.deposit r0 into r2;
-    assert.eq r2 true;
-
-
 function submit:
-    input r0 as field.private;
-    input r1 as u64.private;
-    input r2 as user.record;
-    input r3 as u32.private;
-    hash.bhp256 self.caller into r4 as field;    hash.bhp256 r4 into r5 as field;    add r0 r5 into r6;
-    hash.bhp256 r6 into r7 as field;    sub r2.amount r1 into r8;
-    cast self.caller r8 r7 into r9 as user.record;
-    output r9 as user.record;
-    output r7 as field.private;
+    input r0 as credits.aleo/credits.record;
+    input r1 as address.public;
+    input r2 as address.public;
+    input r3 as field.private;
+    input r4 as u64.private;
+    input r5 as u32.private;
+    hash.bhp256 self.caller into r6 as field;    hash.bhp256 r6 into r7 as field;    add r3 r7 into r8;
+    hash.bhp256 r8 into r9 as field;    call credits.aleo/transfer_private_to_public r0 r2 r4 into r10;
+    output r10 as credits.aleo/credits.record;
+    output r9 as field.private;
 
-    finalize r0 r1 r7 r3;
+    finalize r3 r4 r9 r5;
 
 finalize submit:
     input r0 as field.public;
@@ -183,12 +171,10 @@ function claim:
     input r0 as field.private;
     input r1 as field.private;
     input r2 as u64.private;
-    input r3 as user.record;
-    hash.bhp256 self.caller into r4 as field;    hash.bhp256 r4 into r5 as field;    add r1 r5 into r6;
-    hash.bhp256 r6 into r7 as field;    assert.eq r7 r0;
-    add r3.amount r2 into r8;
-    cast self.caller r8 r3.lastsubmit into r9 as user.record;
-    output r9 as user.record;
+    hash.bhp256 self.caller into r3 as field;    hash.bhp256 r3 into r4 as field;    add r1 r4 into r5;
+    hash.bhp256 r5 into r6 as field;    assert.eq r6 r0;
+    cast self.caller r2 into r7 as user.record;
+    output r7 as user.record;
 
     finalize r0 r2;
 
