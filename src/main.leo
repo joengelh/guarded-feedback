@@ -1,6 +1,6 @@
 import credits.leo;
 
-program guarded_feedback_0_3.aleo {
+program guarded_feedback_0_4.aleo {
 
     struct Report {
         id: field,
@@ -115,28 +115,104 @@ program guarded_feedback_0_3.aleo {
     ) {
         // Check if report exists
         assert(Mapping::contains(reports, id) == true);
+        // Get the current state
         let report: Report = Mapping::get(reports, id);
+        // Check voting is stil open
         assert(report.accepted == false && report.rejected == false);
-        
+        // Update voting
+        report = count_voting(report, true);
         // Check if voting has ended, if it has make the decision
         let current_block_height: u32 = block.height;
-        let accepted: bool = false;
-        let rejected: bool = false;
-        if(current_block_height >= report.voting) 
-        {
-            if (report.votes_yes > report.votes_no) {
-                accepted = true;
-            }
-            else {
-                rejected = true;
-            }
+        if (check_close_voting(current_block_height, report.voting)) {
+            report = close_voting(report);
+        }
+        Mapping::set(reports, id, report);
+    }
+
+    transition no(
+        private id: field,
+    ) {
+        return then finalize(id);
+    }
+    finalize no(
+        public id: field,
+    ) {
+        // Check if report exists
+        assert(Mapping::contains(reports, id) == true);
+        // Get the current state
+        let report: Report = Mapping::get(reports, id);
+        // Check voting is stil open
+        assert(report.accepted == false && report.rejected == false);
+        // Update voting
+        report = count_voting(report, false);
+        // Check if voting has ended, if it has make the decision
+        let current_block_height: u32 = block.height;
+        if (check_close_voting(current_block_height, report.voting)) {
+            report = close_voting(report);
+        }
+        Mapping::set(reports, id, report);
+    }
+
+    inline count_voting(
+        report: Report,
+        vote: bool,
+    ) -> Report {
+        let votes_yes: u128 = report.votes_yes;
+        let votes_no: u128 = report.votes_no;
+        if (vote) {
+            votes_yes += 1u128;
+        }
+        else {
+            votes_no += 1u128;
         }
         let new_report: Report = Report {
             id: report.id,
             security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
-            votes_yes: report.votes_yes + 1u128,
+            votes_yes: votes_yes,
+            votes_no: votes_no,
+            voting: report.voting,
+            accepted: report.accepted,
+            rejected: report.rejected,
+            solved: report.solved,
+            comment: report.comment,
+            rewards: report.rewards,
+            claimed: report.claimed,
+        };
+        return new_report;
+    }
+
+    inline check_close_voting(
+        current_block_height: u32, 
+        voting: u32,
+    ) -> bool {
+        if(current_block_height >= voting) 
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    inline close_voting(report: Report) -> Report {
+        let accepted: bool = false;
+        let rejected: bool = false;
+
+        if (report.votes_yes > report.votes_no) {
+            accepted = true;
+        }
+        else {
+            rejected = true;
+        }
+
+        let new_report: Report = Report {
+            id: report.id,
+            security_deposit: report.security_deposit,
+            block_height: report.block_height,
+            content: report.content,
+            votes_yes: report.votes_yes,
             votes_no: report.votes_no,
             voting: report.voting,
             accepted: accepted,
@@ -146,48 +222,7 @@ program guarded_feedback_0_3.aleo {
             rewards: report.rewards,
             claimed: report.claimed,
         };
-        Mapping::set(reports, id, new_report);
-    }
-    transition no(
-        private id: field,
-    ) {
-        return then finalize(id);
-    }
-    finalize no(
-        public id: field,
-    ) {
-        let report: Report = Mapping::get(reports, id);
-        assert(report.accepted == false && report.rejected == false);
-        
-        // Check if voting has ended, if it has make the decision
-        let current_block_height: u32 = block.height;
-        let accepted: bool = false;
-        let rejected: bool = false;
-        if(current_block_height >= report.voting) 
-        {
-            if (report.votes_yes > report.votes_no) {
-                accepted = true;
-            }
-            else {
-                rejected = true;
-            }
-        }
-        let new_report: Report = Report {
-            id: report.id,
-            security_deposit: report.security_deposit,
-            block_height: report.block_height,
-            content: report.content,
-            votes_yes: report.votes_yes,
-            votes_no: report.votes_no + 1u128,
-            voting: report.voting,
-            accepted: accepted,
-            rejected: rejected,
-            solved: report.solved,
-            comment: report.comment,
-            rewards: report.rewards,
-            claimed: report.claimed,
-        };
-        Mapping::set(reports, id, new_report);
+        return new_report;
     }
 
     transition respond(
