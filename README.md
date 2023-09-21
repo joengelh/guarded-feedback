@@ -93,5 +93,3 @@ respond:
 claim:
 
 ## TODO
-
-# prevent multiple voting
