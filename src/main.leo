@@ -127,16 +127,16 @@ program guarded_feedback_0_5.aleo {
     // - `rewards` (Type: `u64`): The rewards, if any, offered for responding to the report.
     // - `solved` (Type: `bool`): A boolean value indicating whether the issue has been solved.
     transition respond(
-        public id: field,
+        public counter: u128,
         public comment: field,
         public rewards: u64,
         public solved: bool,
     ) {
         let sender: address = self.caller;
-        return then finalize(id, comment, rewards, solved, sender);
+        return then finalize(counter, comment, rewards, solved, sender);
     }
     finalize respond(
-        public id: field,
+        public counter: u128,
         public comment: field,
         public rewards: u64,
         public solved: bool,
@@ -144,7 +144,7 @@ program guarded_feedback_0_5.aleo {
     )
     {
         assert(sender == Mapping::get(settings, 0u8).ownedby);
-        let report: Report = Mapping::get(reports, id);
+        let report: Report = Mapping::get(reports, counter);
         let new_report: Report = Report {
             id: report.id,
             counter: report.counter,
@@ -172,7 +172,7 @@ program guarded_feedback_0_5.aleo {
     // Returns:
     // - `user`: A `user` struct representing the user who claimed the rewards.
     transition claim(
-        private id: field, 
+        private counter: u128, 
         private content: field, 
         private rewards: u64,
         ) -> user {
@@ -180,17 +180,18 @@ program guarded_feedback_0_5.aleo {
         // get the content used originally
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
-        assert_eq(BHP256::hash_to_field(content.add(key_stretching)), id);
+        let id: field = BHP256::hash_to_field(content.add(key_stretching)), counter);
         let new: user = user {
             owner: self.caller,
             amount: rewards,
         };
         //Payout the claimed amount
-        return new then finalize(id, rewards);
+        return new then finalize(counter, rewards, id);
     }
-    finalize claim(public id: field, public rewards: u64)
+    finalize claim(public counter: u128, public rewards: u64, public id: field)
     {
-        let report: Report = Mapping::get(reports, id);
+        let report: Report = Mapping::get(reports, counter);
+        assert(report.id == id);
         assert(report.claimed == false);
         assert(report.rewards == rewards);
         let new_report: Report = Report {

@@ -9,12 +9,12 @@ public security_deposit: u64 = 100u64;
 public voting: u32 = 100000u32;
 
 [respond]
-public id: field = 1field;
+public counter: u128 = 1u128;
 public content: field = 0field;
 public rewards: u64 = 100u64;
 public solved: bool = true;
 
 [claim]
-private id: field = 1field;
+public counter: u128 = 1u128;
 private content: field = 0field;
 private rewards: u64 = 100u64;
