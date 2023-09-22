@@ -1,12 +1,9 @@
 // The program input for guarded_feedback/src/main.leo
-[configure]
-public voting: u32 = 100000u32;
-public security_deposit: u64 = 100u64;
+[transfer_ownership]
+public new_owner: address = aleo1nfcac60jfj0mpxcn7dv0cqzvryzq65elx4h6zg5qg52jr2u2yvrsany3ue;
 
 [submit]
 public content: field = 1field;
-public security_deposit: u64 = 100u64;
-public voting: u32 = 100000u32;
 
 [respond]
 public number: u128 = 1u128;

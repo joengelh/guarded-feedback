@@ -1,9 +1,7 @@
-program guarded_feedback_0_5.aleo {
+program guarded_feedback_0_8.aleo {
 
     struct Settings {
-        ownedby: address,
-        voting: u32,
-        deposit: u64,
+        owned_by: address,
     }
 
     mapping settings: u8 => Settings;
@@ -11,7 +9,6 @@ program guarded_feedback_0_5.aleo {
     struct Report {
         id: field,
         counter: u128,
-        security_deposit: u64,
         block_height: u32,
         content: field,
         solved: bool,
@@ -43,25 +40,34 @@ program guarded_feedback_0_5.aleo {
     // DApp Configuration Function: `configure`
     //
     // Description:
-    // The `configure` function is a fundamental component of the DApp (Decentralized Application) and is responsible for configuring essential settings that govern its behavior. This function allows the DApp owner to customize various parameters, such as voting rules and security deposit requirements. The configuration process is finalized by calling the `finalize` function.
+    // The `configure` function is used to change the owner of the DApp. It allows the current owner to transfer ownership to a new address. The configuration process is finalized by calling the `finalize` function.
     //
     // Parameters:
-    // - `voting` (Type: `u32`): This parameter represents the voting rules or settings for the DApp. It can be a numeric value that dictates how voting is conducted within the application.
-    // - `security_deposit` (Type: `u64`): The `security_deposit` parameter defines the required deposit amount for users participating in the DApp. Users may need to provide this deposit as collateral when using certain DApp features.
-    transition configure(
-        public voting: u32,
-        public security_deposit: u64,
-    ) {
-        let ownedby: address = self.caller;
-        return then finalize(ownedby, voting, security_deposit);
+    // - `new_owner` (Type: `address`): The address of the new owner to whom the DApp ownership will be transferred.
+    //
+    transition initialize_contract() {
+        let sender: address = self.caller;
+        return then finalize(sender);
     }
-    finalize configure(public ownedby: address, public voting: u32, security_deposit: u64) {
-        let new: Settings = Settings {
-            ownedby: ownedby,
-            voting: voting,
-            deposit: security_deposit,
+    finalize initialize_contract(public sender: address) {
+        // Check if the app has been configured. If it has been, check if its the owner
+        let new_settings: Settings = Settings {
+            owned_by: sender,
         };
-        Mapping::set(settings, 0u8, new);
+        Mapping::set(settings, 0u8, new_settings);
+    }
+
+    transition transfer_ownership(new_owner: address) {
+        let sender: address = self.caller;
+        return then finalize(sender, new_owner);
+    }
+    finalize transfer_ownership(public sender: address, public new_owner: address) {
+        // Check if the app has been configured. If it has been, check if its the owner
+        let current_settings: Settings = Mapping::get(settings, 0u8);
+        assert(current_settings.owned_by == sender);
+        Mapping::set(settings, 0u8, Settings {
+            owned_by: new_owner,
+        });
     }
 
     // Submission Function: `submit`
@@ -71,15 +77,11 @@ program guarded_feedback_0_5.aleo {
     //
     // Parameters:
     // - `content` (Type: `field`): The content to be submitted to the DApp.
-    // - `security_deposit` (Type: `u64`): The security deposit required for this submission.
-    // - `voting` (Type: `u32`): Voting rules associated with the submission.
     //
     // Returns:
     // - `(field, reported)`: A tuple containing the generated ID (`field`) and a `reported` struct representing the submission report.
     transition submit(
         private content: field,
-        private security_deposit: u64,
-        private voting: u32,
     ) -> (field, reported) {
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
@@ -88,15 +90,11 @@ program guarded_feedback_0_5.aleo {
             owner: self.caller,
             id: id,
         };
-        return (id, new) then finalize(content, security_deposit, id, voting);
+        return (id, new) then finalize(content, id);
     }
     finalize submit(public content: field,
-    security_deposit: u64,
-    id: field,
-    voting: u32,)
+    id: field,)
     {
-        // check if the security deposit matches the setting
-        assert(Mapping::get(settings, 0u8).deposit == security_deposit);
         // update the counter
         let current_counter: u128 = Mapping::get_or_use(counter, 0u8, 0u128);
         let next_counter: u128 = current_counter + 1u128;
@@ -105,7 +103,6 @@ program guarded_feedback_0_5.aleo {
         Mapping::set(reports, next_counter, Report {
             id: id,
             counter: next_counter,
-            security_deposit: security_deposit,
             block_height: block.height,
             content: content,
             solved: false,
@@ -143,12 +140,13 @@ program guarded_feedback_0_5.aleo {
         public sender: address,
     )
     {
-        assert(sender == Mapping::get(settings, 0u8).ownedby);
+        // this will fail if the app is not configured
+        let current_settings: Settings = Mapping::get(settings, 0u8);
+        assert(current_settings.owned_by == sender);
         let report: Report = Mapping::get(reports, number);
         let new_report: Report = Report {
             id: report.id,
             counter: report.counter,
-            security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
             solved: solved,
@@ -197,7 +195,6 @@ program guarded_feedback_0_5.aleo {
         let new_report: Report = Report {
             id: report.id,
             counter: report.counter,
-            security_deposit: report.security_deposit,
             block_height: report.block_height,
             content: report.content,
             solved: report.solved,

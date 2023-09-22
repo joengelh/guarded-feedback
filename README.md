@@ -16,20 +16,19 @@ leo run configure [""]
 
 ## Deployments
 
-### guarded_feedback_0_4.aleo
+### guarded_feedback_0_8.aleo
 
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-at1su7zn8rnf629pjxn6f2hyv0ww2eyny8kwzpgdmqcj80awul5tvxqtyfkpy
+at1z0cwlvledvhwrsmhp78j7h9jve6nx46fu4kjftae694e4jykmursvnwj6f
 
 configure:
-["100000u32", "100u64"]
-at1zcq642054cj98su36t22g79k3whsw3ttywywg4qzcczgx6yqjvxszvxqrd
+["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
+at1anw9rvlypxzsmlrpm6dtz04gt0lsgcgasgr7n7d26tq9vp59tv9saaucs8
 
 submit:
-
-input = ["1field","100u64","100000u32"]
+input = ["1field"]
 tx = at1en3cq6x7npycs6eenrt7c3u6wv0t4rlxgdupas243m80qwgpzszqczx425
 output = 6299058510241351640367114846012269074869620680143172774364172560696649935347field
 state = {

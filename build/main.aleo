@@ -1,14 +1,11 @@
-program guarded_feedback_0_5.aleo;
+program guarded_feedback_0_8.aleo;
 
 struct Settings:
-    ownedby as address;
-    voting as u32;
-    deposit as u64;
+    owned_by as address;
 
 struct Report:
     id as field;
     counter as u128;
-    security_deposit as u64;
     block_height as u32;
     content as field;
     solved as boolean;
@@ -44,45 +41,49 @@ mapping ids:
 	key left as field.public;
 	value right as u128.public;
 
-function configure:
-    input r0 as u32.public;
-    input r1 as u64.public;
+function initialize_contract:
 
-    finalize self.caller r0 r1;
+    finalize self.caller;
 
-finalize configure:
+finalize initialize_contract:
     input r0 as address.public;
-    input r1 as u32.public;
-    input r2 as u64.public;
-    cast r0 r1 r2 into r3 as Settings;
-    set r3 into settings[0u8];
+    cast r0 into r1 as Settings;
+    set r1 into settings[0u8];
+
+
+function transfer_ownership:
+    input r0 as address.private;
+
+    finalize self.caller r0;
+
+finalize transfer_ownership:
+    input r0 as address.public;
+    input r1 as address.public;
+    get settings[0u8] into r2;
+    is.eq r2.owned_by r0 into r3;
+    assert.eq r3 true;
+    cast r1 into r4 as Settings;
+    set r4 into settings[0u8];
 
 
 function submit:
     input r0 as field.private;
-    input r1 as u64.private;
-    input r2 as u32.private;
-    hash.bhp256 self.caller into r3 as field;    hash.bhp256 r3 into r4 as field;    add r0 r4 into r5;
-    hash.bhp256 r5 into r6 as field;    cast self.caller r6 into r7 as reported.record;
-    output r6 as field.private;
-    output r7 as reported.record;
+    hash.bhp256 self.caller into r1 as field;    hash.bhp256 r1 into r2 as field;    add r0 r2 into r3;
+    hash.bhp256 r3 into r4 as field;    cast self.caller r4 into r5 as reported.record;
+    output r4 as field.private;
+    output r5 as reported.record;
 
-    finalize r0 r1 r6 r2;
+    finalize r0 r4;
 
 finalize submit:
     input r0 as field.public;
-    input r1 as u64.public;
-    input r2 as field.public;
-    input r3 as u32.public;
-    get settings[0u8] into r4;
-    is.eq r4.deposit r1 into r5;
-    assert.eq r5 true;
-    get.or_use counter[0u8] 0u128 into r6;
-    add r6 1u128 into r7;
-    set r7 into counter[0u8];
-    cast r2 r7 r1 block.height r0 false 0field 0u64 false into r8 as Report;
-    set r8 into reports[r7];
-    set r7 into ids[r2];
+    input r1 as field.public;
+    get.or_use counter[0u8] 0u128 into r2;
+    add r2 1u128 into r3;
+    set r3 into counter[0u8];
+    cast r1 r3 block.height r0 false 0field 0u64 false into r4 as Report;
+    set r4 into reports[r3];
+    set r3 into ids[r1];
 
 
 function respond:
@@ -100,10 +101,10 @@ finalize respond:
     input r3 as boolean.public;
     input r4 as address.public;
     get settings[0u8] into r5;
-    is.eq r4 r5.ownedby into r6;
+    is.eq r5.owned_by r4 into r6;
     assert.eq r6 true;
     get reports[r0] into r7;
-    cast r7.id r7.counter r7.security_deposit r7.block_height r7.content r3 r1 r2 r7.claimed into r8 as Report;
+    cast r7.id r7.counter r7.block_height r7.content r3 r1 r2 r7.claimed into r8 as Report;
     set r8 into reports[r7.counter];
 
 
@@ -128,5 +129,5 @@ finalize claim:
     assert.eq r5 true;
     is.eq r3.rewards r1 into r6;
     assert.eq r6 true;
-    cast r3.id r3.counter r3.security_deposit r3.block_height r3.content r3.solved r3.comment r3.rewards true into r7 as Report;
+    cast r3.id r3.counter r3.block_height r3.content r3.solved r3.comment r3.rewards true into r7 as Report;
     set r7 into reports[r3.counter];
