@@ -41,3 +41,6 @@ amount: u64 = 50u64;
 [transfer_public_to_private]
 receiver: address = aleo1mgfq6g40l6zkhsm063n3uhr43qk5e0zsua5aszeq5080dsvlcvxsn0rrau;
 amount: u64 = 50u64;
+
+[burn_public]
+amount: u64 = 50u64;

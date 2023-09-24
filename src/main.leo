@@ -301,4 +301,16 @@ program guarded_feedback_0_8_0.aleo {
         let sender_amount: u64 = Mapping::get_or_use(account, sender, 0u64);
         Mapping::set(account, sender, sender_amount - amount);
     }
+
+    transition burn_public(public amount: u64) {
+        return then finalize(self.caller, amount);
+    }
+    
+    finalize burn_public(public sender: address, public amount: u64) {
+        // Decrements `account[sender]` by `amount`.
+        // If `account[sender]` does not exist, it will be created.
+        // If `account[sender] - amount` underflows, `transfer_public_to_private` is reverted.
+        let sender_amount: u64 = Mapping::get_or_use(account, sender, 0u64);
+        Mapping::set(account, sender, sender_amount - amount);
+    }
 }
