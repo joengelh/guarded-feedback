@@ -14,6 +14,15 @@ To execute this Aleo program, run:
 leo run configure [""]
 ```
 
+## Tools
+
+get records by:
+
+```bash
+cargo install snarkos
+snarkos developer scan
+```
+
 ## Deployments
 
 ### guarded_feedback_0_8.aleo
