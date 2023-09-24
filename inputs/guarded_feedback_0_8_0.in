@@ -1,4 +1,7 @@
 // The program input for guarded_feedback/src/main.leo
+[initialize_contract]
+owned_by: address = aleo1nfcac60jfj0mpxcn7dv0cqzvryzq65elx4h6zg5qg52jr2u2yvrsany3ue;
+
 [transfer_ownership]
 new_owner: address = aleo1nfcac60jfj0mpxcn7dv0cqzvryzq65elx4h6zg5qg52jr2u2yvrsany3ue;
 

@@ -47,8 +47,9 @@ mapping account:
 	value right as u64.public;
 
 function initialize_contract:
+    input r0 as address.public;
 
-    finalize self.caller;
+    finalize r0;
 
 finalize initialize_contract:
     input r0 as address.public;
@@ -194,6 +195,19 @@ function transfer_public_to_private:
     finalize self.caller r1;
 
 finalize transfer_public_to_private:
+    input r0 as address.public;
+    input r1 as u64.public;
+    get.or_use account[r0] 0u64 into r2;
+    sub r2 r1 into r3;
+    set r3 into account[r0];
+
+
+function burn_public:
+    input r0 as u64.public;
+
+    finalize self.caller r0;
+
+finalize burn_public:
     input r0 as address.public;
     input r1 as u64.public;
     get.or_use account[r0] 0u64 into r2;

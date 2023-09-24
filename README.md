@@ -30,10 +30,10 @@ snarkos developer scan
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-at1z0cwlvledvhwrsmhp78j7h9jve6nx46fu4kjftae694e4jykmursvnwj6f
+at103z6us2zrf2qtt4tw3pvsg8hcgczsl84l2qk0dmny7m0umlnt5pq0y5ffm
 
-configure:
-["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
+initialize_contract:
+[]
 at1anw9rvlypxzsmlrpm6dtz04gt0lsgcgasgr7n7d26tq9vp59tv9saaucs8
 
 submit:

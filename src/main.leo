@@ -50,14 +50,14 @@ program guarded_feedback_0_8_0.aleo {
     // Parameters:
     // - `new_owner` (Type: `address`): The address of the new owner to whom the DApp ownership will be transferred.
     //
-    transition initialize_contract() {
-        let sender: address = self.caller;
-        return then finalize(sender);
+    transition initialize_contract(public new_owner: address) {
+        return then finalize(new_owner);
     }
-    finalize initialize_contract(public sender: address) {
+
+    finalize initialize_contract(public new_owner: address) {
         // Check if the app has been configured. If it has been, check if its the owner
         let new_settings: Settings = Settings {
-            owned_by: sender,
+            owned_by: new_owner,
         };
         Mapping::set(settings, 0u8, new_settings);
     }
