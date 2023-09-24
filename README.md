@@ -23,81 +23,32 @@ cargo install snarkos
 snarkos developer scan
 ```
 
+## Notes
+
+Input and output cant be the same twice
+a failed transaction that fas failed on-chain costs fees and generates a new fee record
+
 ## Deployments
 
-### guarded_feedback_0_8.aleo
+### guarded_feedback_0_8_0.aleo
 
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-at103z6us2zrf2qtt4tw3pvsg8hcgczsl84l2qk0dmny7m0umlnt5pq0y5ffm
+at1rw2muj3zhlqz3g006n38zvlrtc0kx5lhhysymn4avdm2v57exsrq85szvv
 
 initialize_contract:
-[]
-at1anw9rvlypxzsmlrpm6dtz04gt0lsgcgasgr7n7d26tq9vp59tv9saaucs8
+["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
+at1897pyeyr9qjpwerjyeu2gynl322pheasezg4zpkhwqzc3f6f2gpqvrlz2y
 
 submit:
 input = ["1field"]
-tx = at1en3cq6x7npycs6eenrt7c3u6wv0t4rlxgdupas243m80qwgpzszqczx425
-output = 6299058510241351640367114846012269074869620680143172774364172560696649935347field
-state = {
-id: 6299058510241351640367114846012269074869620680143172774364172560696649935347field,
-security_deposit: 100u64,
-block_height: 620767u32,
-content: 1field,
-votes_yes: 0u128,
-votes_no: 0u128,
-voting: 720767u32,
-accepted: false,
-rejected: false,
-solved: false,
-comment: 0field,
-rewards: 0u64,
-claimed: false
-}
-
-vote_yes:
-
-input = ["6299058510241351640367114846012269074869620680143172774364172560696649935347field"]
-tx = at1tng508pz0v04w0ttc7ra86tsg48ktk0gkqf7l0neh7duyulwwuyssryd5y
-state = {
-id: 6299058510241351640367114846012269074869620680143172774364172560696649935347field,
-security_deposit: 100u64,
-block_height: 620767u32,
-content: 1field,
-votes_yes: 1u128,
-votes_no: 0u128,
-voting: 720767u32,
-accepted: false,
-rejected: false,
-solved: false,
-comment: 0field,
-rewards: 0u64,
-claimed: false
-}
-
-vote_no:
-
-input = ["6299058510241351640367114846012269074869620680143172774364172560696649935347field"]
-tx = at1277p40jh5p7yfaa9ptnyqagnx7svt7ju48gerdwhye2mlv6mrqysgqfjdt
-state = {
-id: 6299058510241351640367114846012269074869620680143172774364172560696649935347field,
-security_deposit: 100u64,
-block_height: 620767u32,
-content: 1field,
-votes_yes: 1u128,
-votes_no: 1u128,
-voting: 720767u32,
-accepted: false,
-rejected: false,
-solved: false,
-comment: 0field,
-rewards: 0u64,
-claimed: false
-}
+tx = at10gfwsd3za0nupt60exnnh9wzuzt64lwju3wsr5qdflamdzk7kqpqv96d7p
 
 respond:
+input = ["1u128","2field","100u64","true"]
+tx = at1xf9edj3cn3zpdfqc7daln74whgmw8zdj6qxx0ae6xj3x40qcpsrq3vmtul
 
 claim:
-
-## TODO
+input = ["1u128","1field","100u64"]
+tx = at1djprdpp0yqh2fj3de92h5af55ezfznv4lyzqcgnsmzhwd2qanqzqgu8n9e
