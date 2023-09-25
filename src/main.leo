@@ -192,6 +192,9 @@ program guarded_feedback_0_8_1.aleo {
         return new then finalize(number, rewards, id);
     }
     finalize claim(public number: u128, public rewards: u64, public id: field)
+        return new then finalize(id, rewards);
+    }
+    finalize claim(public id: field, public rewards: u64)
     {
         let report: Report = Mapping::get(reports, number);
         assert(report.id == id);

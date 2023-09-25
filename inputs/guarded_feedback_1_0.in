@@ -1,0 +1,32 @@
+// The program input for guarded_feedback/src/main.leo
+[configure]
+public voting: u32 = 100u32;
+public security_deposit: u64 = 100u64;
+
+[submit]
+private input: credits = credits {
+    owner: address = aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr,
+    microcredits: u64 = 100u64,
+};
+public to: address = aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr;
+public holder: address = aleo1pvmhrzm5tevxg7rrj65z6txpvm9stfgex05v4lfs05677n7e0cxqdk46jr;
+public content: field = 1field;
+public security_deposit: u64 = 100u64;
+public voting: u32 = 100u32;
+
+[yes]
+private id: field = 1field;
+
+[no]
+private id: field = 1field;
+
+[respond]
+public id: field = 1field;
+public content: field = 0field;
+public rewards: u64 = 100u64;
+public solved: bool = true;
+
+[claim]
+private id: field = 1field;
+private content: field = 0field;
+private rewards: u64 = 100u64;
