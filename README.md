@@ -14,30 +14,41 @@ To execute this Aleo program, run:
 leo run configure [""]
 ```
 
+## Tools
+
+get records by:
+
+```bash
+cargo install snarkos
+snarkos developer scan
+```
+
+## Notes
+
+Input and output cant be the same twice
+a failed transaction that fas failed on-chain costs fees and generates a new fee record
+
 ## Deployments
 
-### guarded_feedback_0_4.aleo
+### guarded_feedback_0_8_0.aleo
 
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-at1vus62lnx8gyrprs80a0eavtq3uzq959eyjme4vdjsdddgy33fspsgkq833
+at1rw2muj3zhlqz3g006n38zvlrtc0kx5lhhysymn4avdm2v57exsrq85szvv
 
-configure:
-at1dhg833mw9ynvt36jekvj3dqqtt8pgql6299ckpr7ep6atgu6ds8qfuqylr
-
-reset:
-at1k9w5uhlxv20s26gquq6u44c59ltuyvsa74qcw577yfqt9g3xu59scfks6p
+initialize_contract:
+["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
+at1897pyeyr9qjpwerjyeu2gynl322pheasezg4zpkhwqzc3f6f2gpqvrlz2y
 
 submit:
-["1field","100u64","{owner: aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y.private,amount: 100u64.private,lastsubmit: 0field.private,_nonce:7774982171151608203396393866068876340718764748266590473492521366199767423222group.public}","100000u32"]
-
-tx:
+input = ["1field"]
+tx = at10gfwsd3za0nupt60exnnh9wzuzt64lwju3wsr5qdflamdzk7kqpqv96d7p
 
 respond:
+input = ["1u128","2field","100u64","true"]
+tx = at1xf9edj3cn3zpdfqc7daln74whgmw8zdj6qxx0ae6xj3x40qcpsrq3vmtul
 
-vote:
-
-## TODO
-
-# prevent multiple voting
+claim:
+input = ["1u128","1field","100u64"]
+tx = at1djprdpp0yqh2fj3de92h5af55ezfznv4lyzqcgnsmzhwd2qanqzqgu8n9e
