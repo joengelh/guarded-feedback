@@ -1,5 +1,10 @@
 # guarded_feedback.aleo
 
+## Versions
+
+The project exists in two diffrent versions. One where a security deposit payed in aleo credits is used
+for security against spam and used to payout rewards can be found in the branch: **security_deposit_based**, whilst the main branch consists of a version where no security deposit is needed, and submitting parties are rewarded with app-native tokens.
+
 ## Build Guide
 
 To compile this Aleo program, run:
