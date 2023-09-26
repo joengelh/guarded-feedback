@@ -18,12 +18,20 @@
             background-color: #f2f2f2;
         }
     </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 <body>
     <h1>Mapping Counter Query</h1>
 
-    <div>
-        <h2>Program: guarded_feedback_0_8_1.aleo</h2>
+    <h2>Select a Smart Contract:</h2>
+    <select id="contractSelect">
+        <option value="guarded_feedback_0_8_1.aleo">guarded_feedback_0_8_1.aleo</option>
+        <option value="guarded_feedback_0_8_2.aleo">guarded_feedback_0_8_2.aleo</option>
+        <!-- Add more contract options manually -->
+    </select>
+        <div>
+        <h2>Program: <span id="selectedContractName"></span></h2>
         <p>Amount of reports submitted: <span id="mappingCounter1"></span></p>
     </div>
 
@@ -33,7 +41,7 @@
             <tr>
                 <th>Report ID</th>
                 <th>Counter</th>
-                <th> Submit Block Height</th>
+                <th>Submit Block Height</th>
                 <th>Content</th>
                 <th>Solved</th>
                 <th>Comment</th>
@@ -47,8 +55,9 @@
     </table>
 
     <script>
-        const endpoint = "https://vm.aleo.org/api/testnet3/program/guarded_feedback_0_8_1.aleo/mapping/counter/0u8";
-        
+        const endpoint_api = "https://vm.aleo.org/api/testnet3/program/";
+        let selectedContract = ""; // Store the selected contract name
+
         const headers = {
             "Accept": "application/json, text/plain, */*",
             "Accept-Encoding": "gzip, deflate, br",
@@ -66,9 +75,101 @@
             "sec-ch-ua-platform": "macOS"
         };
 
+        // ...
+function bigIntToString(bigIntValue) {
+  const bytes = [];
+  let tempBigInt = bigIntValue;
+
+  while (tempBigInt > BigInt(0)) {
+    const byteValue = Number(tempBigInt & BigInt(255));
+    bytes.push(byteValue);
+    tempBigInt = tempBigInt >> BigInt(8);
+  }
+
+  const decoder = new TextDecoder();
+  const asciiString = decoder.decode(Uint8Array.from(bytes));
+  return asciiString;
+}
+
+        function parseNonStandardJSON(jsonString) {
+    // Replace unquoted keys and values with double-quoted keys and values
+    const fixedJsonString = jsonString
+        .replace(/([a-zA-Z_][a-zA-Z0-9_]*):/g, '"$1":')
+        .replace(/(\d+[a-zA-Z_][a-zA-Z0-9_]*),/g, '"$1",')
+        .replace(/(true|false),/g, '"$1",');
+
+    // Parse the JSON string
+    const jsonObject = JSON.parse(fixedJsonString);
+
+    return jsonObject;
+}
+
+        // Function to display reports data in a table
+function displayReports(reportsData) {
+    const reportTable = document.getElementById("reportTable");
+    const tbody = reportTable.querySelector("tbody");
+
+    // Clear existing table rows
+    tbody.innerHTML = "";
+
+    // Loop through the reports data and add rows to the table
+    reportsData.forEach(reportString => {
+        // Parse the non-standard JSON data
+        const report = parseNonStandardJSON(reportString);
+
+        const row = tbody.insertRow();
+        // Add cells for each field in the struct
+        const idCell = row.insertCell(0);
+        const counterCell = row.insertCell(1);
+        const blockHeightCell = row.insertCell(2);
+        const contentCell = row.insertCell(3);
+        const solvedCell = row.insertCell(4);
+        const commentCell = row.insertCell(5);
+        const rewardsCell = row.insertCell(6);
+        const claimedCell = row.insertCell(7);
+
+        // Set cell values based on the struct fields
+        idCell.textContent = report.id;
+        counterCell.textContent = report.counter;
+        blockHeightCell.textContent = report.block_height;
+
+        // Check if the "content" field is in the format of a field and convert it
+        if (report.content.endsWith('field')) {
+            const contentValue = bigIntToString(BigInt(report.content.slice(0, -5)));
+            contentCell.textContent = contentValue === '' ? 'N.A.' : contentValue;
+        } else {
+            contentCell.textContent = report.content;
+        }
+
+        // Check if the "comment" field is in the format of a field and convert it
+        if (report.comment.endsWith('field')) {
+            const commentValue = bigIntToString(BigInt(report.comment.slice(0, -5)));
+            commentCell.textContent = commentValue === '' ? 'N.A.' : commentValue;
+        } else {
+            commentCell.textContent = report.comment;
+        }
+
+        solvedCell.textContent = report.solved;
+
+        // Display "N.A." for rewards when their value is 0
+        rewardsCell.textContent = report.rewards === '0' ? 'N.A.' : report.rewards;
+
+        claimedCell.textContent = report.claimed;
+    });
+}
         // Function to fetch data and update the HTML content
         function fetchAndDisplayData() {
-            fetch(endpoint, { headers, method: "GET" })
+            selectedContract = document.getElementById("contractSelect").value;
+            document.getElementById("selectedContractName").textContent = selectedContract;
+
+            if (!selectedContract) {
+                // Handle the case where no contract is selected
+                document.getElementById("mappingCounter1").textContent = "";
+                return;
+            }
+
+            // Fetch the mapping counter for the selected contract
+            fetch(endpoint_api + selectedContract + "/mapping/counter/0u8", { headers, method: "GET" })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -85,7 +186,7 @@
 
                     // Create async requests for each report using the mapping counter value
                     for (let i = 1; i <= mappingCounter2; i++) {
-                        const reportEndpoint = `https://vm.aleo.org/api/testnet3/program/guarded_feedback_0_8_1.aleo/mapping/reports/${i}u128`;
+                        const reportEndpoint = endpoint_api + selectedContract + `/mapping/reports/${i}u128`;
                         const reportPromise = fetch(reportEndpoint, { headers, method: "GET" })
                             .then(response => {
                                 if (!response.ok) {
@@ -114,58 +215,12 @@
                 });
         }
 
-        function parseNonStandardJSON(jsonString) {
-    // Replace unquoted keys and values with double-quoted keys and values
-    const fixedJsonString = jsonString
-        .replace(/([a-zA-Z_][a-zA-Z0-9_]*):/g, '"$1":')
-        .replace(/(\d+[a-zA-Z_][a-zA-Z0-9_]*),/g, '"$1",')
-        .replace(/(true|false),/g, '"$1",');
-
-    // Parse the JSON string
-    const jsonObject = JSON.parse(fixedJsonString);
-
-    return jsonObject;
-}
-
-// ...
-
-// Function to display reports data in a table
-function displayReports(reportsData) {
-    const reportTable = document.getElementById("reportTable");
-    const tbody = reportTable.querySelector("tbody");
-
-    // Clear existing table rows
-    tbody.innerHTML = "";
-
-    // Loop through the reports data and add rows to the table
-    reportsData.forEach(reportString => {
-        // Parse the non-standard JSON data
-        const report = parseNonStandardJSON(reportString);
-
-        const row = tbody.insertRow();
-        // Add cells for each field in the struct
-        const idCell = row.insertCell(0);
-        const counterCell = row.insertCell(1);
-        const blockHeightCell = row.insertCell(2);
-        const contentCell = row.insertCell(3);
-        const solvedCell = row.insertCell(4);
-        const commentCell = row.insertCell(5);
-        const rewardsCell = row.insertCell(6);
-        const claimedCell = row.insertCell(7);
-
-        // Set cell values based on the struct fields
-        idCell.textContent = report.id;
-        counterCell.textContent = report.counter;
-        blockHeightCell.textContent = report.block_height;
-        contentCell.textContent = report.content;
-        solvedCell.textContent = report.solved;
-        commentCell.textContent = report.comment;
-        rewardsCell.textContent = report.rewards;
-        claimedCell.textContent = report.claimed;
-    });
-}
-
-// ...
+                // Event listener for contract dropdown change
+                document.getElementById("contractSelect").addEventListener("change", function() {
+            selectedContract = this.value;
+            document.getElementById("selectedContractName").textContent = selectedContract;
+            fetchAndDisplayData();
+        });
 
         // Fetch data and update HTML content when the page loads
         fetchAndDisplayData();
