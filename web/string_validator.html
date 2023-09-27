@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Length Checker</title>
+    <style>
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>String Length Checker</h1>
+    <label for="inputText">Enter a String:</label>
+    <input type="text" id="inputText" oninput="checkStringLength()" style="color: black;" placeholder="Please input text">
+    <p id="result">Please input text</p>
+    <script>
+        function stringToBigInt(input) {
+            if (input === "") {
+                document.getElementById("result").classList.remove("success", "error");
+                document.getElementById("result").textContent = "Please input text";
+                return null;
+            }
+
+            const encoder = new TextEncoder();
+            const encodedBytes = encoder.encode(input);
+
+            let bigIntValue = BigInt(0);
+            for (let i = 0; i < encodedBytes.length; i++) {
+                const byteValue = BigInt(encodedBytes[i]);
+                const shiftedValue = byteValue << BigInt(8 * i);
+                bigIntValue = bigIntValue | shiftedValue;
+            }
+
+            if (bigIntValue <= BigInt("8444461749428370424248824938781546531375899335154063827935233455917409239040")) {
+                document.getElementById("result").classList.remove("error");
+                document.getElementById("result").classList.add("success");
+                document.getElementById("result").textContent = "Field is small enough and will be correctly stored";
+            } else {
+                document.getElementById("result").classList.remove("success");
+                document.getElementById("result").classList.add("error");
+                document.getElementById("result").textContent = "Field is too big and will not be correctly stored";
+            }
+            return bigIntValue;
+        }
+
+        function checkStringLength() {
+            const inputText = document.getElementById("inputText").value;
+            stringToBigInt(inputText);
+        }
+    </script>
+</body>
+</html>
