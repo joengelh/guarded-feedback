@@ -74,8 +74,11 @@ finalize transfer_ownership:
 
 function submit:
     input r0 as field.private;
-    hash.bhp256 self.caller into r1 as field;    hash.bhp256 r1 into r2 as field;    add r0 r2 into r3;
-    hash.bhp256 r3 into r4 as field;    cast self.caller r4 into r5 as reported.record;
+    hash.bhp256 self.caller into r1 as field;
+    hash.bhp256 r1 into r2 as field;
+    add r0 r2 into r3;
+    hash.bhp256 r3 into r4 as field;
+    cast self.caller r4 into r5 as reported.record;
     output r4 as field.private;
     output r5 as reported.record;
 
@@ -118,8 +121,11 @@ function claim:
     input r0 as u128.private;
     input r1 as field.private;
     input r2 as u64.private;
-    hash.bhp256 self.caller into r3 as field;    hash.bhp256 r3 into r4 as field;    add r1 r4 into r5;
-    hash.bhp256 r5 into r6 as field;    cast self.caller r2 into r7 as token.record;
+    hash.bhp256 self.caller into r3 as field;
+    hash.bhp256 r3 into r4 as field;
+    add r1 r4 into r5;
+    hash.bhp256 r5 into r6 as field;
+    cast self.caller r2 into r7 as token.record;
     output r7 as token.record;
 
     finalize r0 r2 r6;
