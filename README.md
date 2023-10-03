@@ -46,7 +46,7 @@ Allows the current owner to transfer ownership to a new address. Requires verifi
 
 ### `submit(private content: field) -> (field, reported)`
 
-Allows users to submit content to the DApp. Generates a unique ID for the submission and creates a new report. 
+Allows users to submit content to the DApp. Generates a unique ID for the submission and creates a new report.
 
 ### `respond(public number: u128, public comment: field, public rewards: u64, public solved: bool)`
 
@@ -82,3 +82,28 @@ Burns a specified amount of public tokens from the caller's account.
 - Use `submit`, `respond`, and `claim` functions to interact with the feedback system.
 - Token transfers can be made publicly using `transfer_public` and privately using `transfer_private`. Conversion functions are available for public-to-private and private-to-public transfers.
 - Use appropriate security measures and validation logic in external applications interacting with this smart contract.
+
+## Deployments
+
+### guarded_feedback_0_0_1.aleo
+
+https://vm.aleo.org/api/testnet3/transaction/
+
+deployed at txID:
+at1rw2muj3zhlqz3g006n38zvlrtc0kx5lhhysymn4avdm2v57exsrq85szvv
+
+initialize_contract:
+["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
+at1897pyeyr9qjpwerjyeu2gynl322pheasezg4zpkhwqzc3f6f2gpqvrlz2y
+
+submit:
+input = ["1field"]
+tx = at10gfwsd3za0nupt60exnnh9wzuzt64lwju3wsr5qdflamdzk7kqpqv96d7p
+
+respond:
+input = ["1u128","2field","100u64","true"]
+tx = at1xf9edj3cn3zpdfqc7daln74whgmw8zdj6qxx0ae6xj3x40qcpsrq3vmtul
+
+claim:
+input = ["1u128","1field","100u64"]
+tx = at1djprdpp0yqh2fj3de92h5af55ezfznv4lyzqcgnsmzhwd2qanqzqgu8n9e
