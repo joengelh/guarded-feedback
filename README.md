@@ -83,6 +83,14 @@ Burns a specified amount of public tokens from the caller's account.
 - Token transfers can be made publicly using `transfer_public` and privately using `transfer_private`. Conversion functions are available for public-to-private and private-to-public transfers.
 - Use appropriate security measures and validation logic in external applications interacting with this smart contract.
 
+## Installation
+
+```bash
+git clone https://github.com/AleoHQ/snarkVM
+cd snarkvm
+$ cargo install --path .
+```
+
 ## Deployments
 
 ### guarded_feedback_0_0_1.aleo
