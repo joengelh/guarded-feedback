@@ -23,33 +23,33 @@ record reported:
 
 
 mapping settings:
-	key left as u8.public;
-	value right as Settings.public;
+	key as u8.public;
+	value as Settings.public;
 
 
 mapping counter:
-	key left as u8.public;
-	value right as u128.public;
+	key as u8.public;
+	value as u128.public;
 
 
 mapping reports:
-	key left as u128.public;
-	value right as Report.public;
+	key as u128.public;
+	value as Report.public;
 
 
 mapping ids:
-	key left as field.public;
-	value right as u128.public;
+	key as field.public;
+	value as u128.public;
 
 
 mapping account:
-	key left as address.public;
-	value right as u64.public;
+	key as address.public;
+	value as u64.public;
 
 function initialize_contract:
     input r0 as address.public;
-
-    finalize r0;
+    async initialize_contract r0 into r1;
+    output r1 as guarded_feedback_0_0_1.aleo/initialize_contract.future;
 
 finalize initialize_contract:
     input r0 as address.public;
@@ -59,8 +59,8 @@ finalize initialize_contract:
 
 function transfer_ownership:
     input r0 as address.private;
-
-    finalize self.caller r0;
+    async transfer_ownership self.caller r0 into r1;
+    output r1 as guarded_feedback_0_0_1.aleo/transfer_ownership.future;
 
 finalize transfer_ownership:
     input r0 as address.public;
@@ -79,10 +79,10 @@ function submit:
     add r0 r2 into r3;
     hash.bhp256 r3 into r4 as field;
     cast self.caller r4 into r5 as reported.record;
+    async submit r0 r4 into r6;
     output r4 as field.private;
     output r5 as reported.record;
-
-    finalize r0 r4;
+    output r6 as guarded_feedback_0_0_1.aleo/submit.future;
 
 finalize submit:
     input r0 as field.public;
@@ -100,8 +100,8 @@ function respond:
     input r1 as field.public;
     input r2 as u64.public;
     input r3 as boolean.public;
-
-    finalize r0 r1 r2 r3 self.caller;
+    async respond r0 r1 r2 r3 self.caller into r4;
+    output r4 as guarded_feedback_0_0_1.aleo/respond.future;
 
 finalize respond:
     input r0 as u128.public;
@@ -126,9 +126,9 @@ function claim:
     add r1 r4 into r5;
     hash.bhp256 r5 into r6 as field;
     cast self.caller r2 into r7 as token.record;
+    async claim r0 r2 r6 into r8;
     output r7 as token.record;
-
-    finalize r0 r2 r6;
+    output r8 as guarded_feedback_0_0_1.aleo/claim.future;
 
 finalize claim:
     input r0 as u128.public;
@@ -148,8 +148,8 @@ finalize claim:
 function transfer_public:
     input r0 as address.public;
     input r1 as u64.public;
-
-    finalize self.caller r0 r1;
+    async transfer_public self.caller r0 r1 into r2;
+    output r2 as guarded_feedback_0_0_1.aleo/transfer_public.future;
 
 finalize transfer_public:
     input r0 as address.public;
@@ -180,9 +180,9 @@ function transfer_private_to_public:
     input r2 as u64.public;
     sub r0.amount r2 into r3;
     cast r0.owner r3 into r4 as token.record;
+    async transfer_private_to_public r1 r2 into r5;
     output r4 as token.record;
-
-    finalize r1 r2;
+    output r5 as guarded_feedback_0_0_1.aleo/transfer_private_to_public.future;
 
 finalize transfer_private_to_public:
     input r0 as address.public;
@@ -196,9 +196,9 @@ function transfer_public_to_private:
     input r0 as address.public;
     input r1 as u64.public;
     cast r0 r1 into r2 as token.record;
+    async transfer_public_to_private self.caller r1 into r3;
     output r2 as token.record;
-
-    finalize self.caller r1;
+    output r3 as guarded_feedback_0_0_1.aleo/transfer_public_to_private.future;
 
 finalize transfer_public_to_private:
     input r0 as address.public;
@@ -210,8 +210,8 @@ finalize transfer_public_to_private:
 
 function burn_public:
     input r0 as u64.public;
-
-    finalize self.caller r0;
+    async burn_public self.caller r0 into r1;
+    output r1 as guarded_feedback_0_0_1.aleo/burn_public.future;
 
 finalize burn_public:
     input r0 as address.public;

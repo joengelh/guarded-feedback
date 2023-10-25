@@ -98,15 +98,15 @@ $ cargo install --path .
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-at1rw2muj3zhlqz3g006n38zvlrtc0kx5lhhysymn4avdm2v57exsrq85szvv
+https://vm.aleo.org/api/testnet3/transaction/at1g47h447kw6w9y4h2e44zga5w84s27at4e6uteesuuy4u5ghqvcfqw6qe3z
 
 initialize_contract:
 ["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
-at1897pyeyr9qjpwerjyeu2gynl322pheasezg4zpkhwqzc3f6f2gpqvrlz2y
+at1z43rtp9x0vgnzxc4xqe7slwu45gy4qg4ppegf74f0g82laqpksqsnulqnp
 
 submit:
-input = ["1field"]
-tx = at10gfwsd3za0nupt60exnnh9wzuzt64lwju3wsr5qdflamdzk7kqpqv96d7p
+input = ["901305943116055393314107185019430750261130105947222795572321109111376field"]
+tx = at1nfzv3qjy4uqgulx9jv3l3j0y3pcms9hctszpctqahk752369s5yqekvw8l
 
 respond:
 input = ["1u128","2field","100u64","true"]
