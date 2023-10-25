@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>String Length Checker</title>
+    <title>Converter</title>
     <style>
         .error {
             color: red;
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>String Length Checker</h1>
+    <h1>String to Field converter and Length Check</h1>
     <label for="inputText">Enter a String:</label>
     <input type="text" id="inputText" oninput="checkStringLength()" style="color: black;" placeholder="Please input text">
     <p id="result">Please input text</p>
@@ -47,7 +47,23 @@
 
         function displayCalculatedField(value) {
             const calculatedFieldDiv = document.getElementById("calculatedField");
-            calculatedFieldDiv.innerHTML = value !== null ? `<p>Calculated Field: ${value.toString()}field</p>` : '';
+            const resultDiv = document.getElementById("result");
+
+            if (value !== null) {
+                if (value <= BigInt("8444461749428370424248824938781546531375899335154063827935233455917409239040")) {
+                    calculatedFieldDiv.innerHTML = `<p class="success">Calculated Field: ${value.toString()}field</p>`;
+                    resultDiv.textContent = "Field is small enough and will be correctly stored";
+                    resultDiv.className = "success";
+                } else {
+                    calculatedFieldDiv.innerHTML = `<p class="error">Calculated Field: ${value.toString()}field</p>`;
+                    resultDiv.textContent = "Field is too big and will not be correctly stored";
+                    resultDiv.className = "error";
+                }
+            } else {
+                calculatedFieldDiv.innerHTML = '';
+                resultDiv.textContent = "Please input text";
+                resultDiv.className = '';
+            }
         }
     </script>
 </body>
