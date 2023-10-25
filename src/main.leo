@@ -1,4 +1,4 @@
-program guarded_feedback_0_0_1.aleo {
+program guarded_feedback_0_0_2.aleo {
 
     struct Settings {
         owned_by: address,
