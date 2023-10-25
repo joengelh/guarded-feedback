@@ -100,6 +100,8 @@ program guarded_feedback_0_0_1.aleo {
     finalize submit(public content: field,
     id: field,)
     {
+        // Check if the specific id already exists
+        assert(Mapping::contains(ids, id) == false);
         // update the counter
         let current_counter: u128 = Mapping::get_or_use(counter, 0u8, 0u128);
         let next_counter: u128 = current_counter + 1u128;

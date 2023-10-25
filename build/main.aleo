@@ -87,12 +87,15 @@ function submit:
 finalize submit:
     input r0 as field.public;
     input r1 as field.public;
-    get.or_use counter[0u8] 0u128 into r2;
-    add r2 1u128 into r3;
-    set r3 into counter[0u8];
-    cast r1 r3 block.height r0 false 0field 0u64 false into r4 as Report;
-    set r4 into reports[r3];
-    set r3 into ids[r1];
+    contains ids[r1] into r2;
+    is.eq r2 false into r3;
+    assert.eq r3 true;
+    get.or_use counter[0u8] 0u128 into r4;
+    add r4 1u128 into r5;
+    set r5 into counter[0u8];
+    cast r1 r5 block.height r0 false 0field 0u64 false into r6 as Report;
+    set r6 into reports[r5];
+    set r5 into ids[r1];
 
 
 function respond:
