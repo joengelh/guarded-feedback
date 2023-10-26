@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Converter</title>
+    <title>Submit</title>
     <style>
         .error {
             color: red;
@@ -11,13 +11,25 @@
         .success {
             color: green;
         }
+        .connect-wallet {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 20px;
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+            background-color: lightblue;
+            border-radius: 10px; /* Adjust the value to control the roundness of the edges */
+        }
     </style>
 </head>
 <body>
-    <h1>String to Field converter and Length Check</h1>
-    <label for="inputText">Enter a String:</label>
+    <div class="connect-wallet">Connect Wallet</div>
+    <h1>Submit Feedback Anonymously</h1>
+    <label for="inputText">Enter your Feedback:</label>
     <input type="text" id="inputText" oninput="checkStringLength()" style="color: black;" placeholder="Please input text">
-    <p id="result">Please input text</p>
+    <p id="result"></p>
     <div id="calculatedField"></div>
 
     <script>
@@ -61,10 +73,12 @@
                 }
             } else {
                 calculatedFieldDiv.innerHTML = '';
-                resultDiv.textContent = "Please input text";
+                resultDiv.textContent = "";
                 resultDiv.className = '';
             }
         }
     </script>
+    <button type="submit">Submit</button>
+
 </body>
 </html>

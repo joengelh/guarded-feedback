@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Claim</title>
+    <style>
+        .connect-wallet {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 20px;
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+            background-color: lightblue;
+            border-radius: 10px; /* Adjust the value to control the roundness of the edges */
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="connect-wallet">Connect Wallet</div>
+    <div>
+        <p>Amount of Feedbacks submitted: <span id="mappingCounter1"></span></p>
+        <label for="feedbackSelect">Select Feedback:</label>
+        <select id="feedbackSelect"></select>
+        <button id="claimButton">Claim</button>
+    </div>
+
+    <script>
+        const endpoint_api = "https://vm.aleo.org/api/testnet3/program/";
+        let selectedproduct = "guarded_feedback_0_0_2.aleo";
+
+        const headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+            "Connection": "keep-alive",
+            "Host": "vm.aleo.org",
+            "Origin": "https://aleo.tools",
+            "Referer": "https://aleo.tools/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "cross-site",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+            "sec-ch-ua": "\"Chromium\";v=\"116\", \"Not)A;Brand\";v=\"24\", \"Google Chrome\";v=\"116\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "macOS"
+        };
+
+        function bigIntToString(bigIntValue) {
+            const bytes = [];
+            let tempBigInt = bigIntValue;
+
+            while (tempBigInt > BigInt(0)) {
+                const byteValue = Number(tempBigInt & BigInt(255));
+                bytes.push(byteValue);
+                tempBigInt = tempBigInt >> BigInt(8);
+            }
+
+            const decoder = new TextDecoder();
+            const asciiString = decoder.decode(Uint8Array.from(bytes));
+            return asciiString;
+        }
+
+        function populateFeedbackSelect(feedbackCount) {
+            const feedbackSelect = document.getElementById("feedbackSelect");
+
+            for (let i = 1; i <= feedbackCount; i++) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = `Feedback ${i}`;
+                feedbackSelect.appendChild(option);
+            }
+        }
+
+        function fetchAndDisplayData() {
+            // Fetch the mapping counter for the selected contract
+            fetch(endpoint_api + selectedproduct + "/mapping/counter/0u8", { headers, method: "GET" })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(mappingCounterString => {
+                    const mappingCounter1 = mappingCounterString.replace(/"/g, ''); // Remove double quotes for the counter query
+                    const mappingCounter2 = parseInt(mappingCounter1.replace("u128", ""));
+                    document.getElementById("mappingCounter1").textContent = mappingCounter2;
+
+                    // Populate the feedback select dropdown
+                    populateFeedbackSelect(mappingCounter2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("mappingCounter1").textContent = 'Error fetching mapping counter.';
+                });
+        }
+
+        // Fetch data and update HTML content when the page loads
+        fetchAndDisplayData();
+
+        // Add click event listener to claim button
+        document.getElementById("claimButton").addEventListener("click", () => {
+            const selectedFeedbackIndex = document.getElementById("feedbackSelect").value;
+            console.log(`Claiming feedback ${selectedFeedbackIndex}`);
+            // Perform your claim operation here using the selectedFeedbackIndex
+            // For example, you can send a claim request to the server using fetch() here
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mapping Counter Query</title>
+    <title>Guarded Feedback</title>
     <style>
         table {
             border-collapse: collapse;
@@ -17,35 +17,40 @@
         th {
             background-color: #f2f2f2;
         }
+        .connect-wallet {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 20px;
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+            background-color: lightblue;
+            border-radius: 10px; /* Adjust the value to control the roundness of the edges */
+        }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 <body>
-    <h1>Mapping Counter Query</h1>
 
-    <h2>Select a Smart Contract:</h2>
-    <select id="contractSelect">
-        <option value="guarded_feedback_0_0_1.aleo">guarded_feedback_0_0_1.aleo</option>
-        <option value="guarded_feedback_0_0_2.aleo">guarded_feedback_0_0_2.aleo</option>
-        <!-- Add more contract options manually -->
-    </select>
-        <div>
-        <h2>Program: <span id="selectedContractName"></span></h2>
-        <p>Amount of reports submitted: <span id="mappingCounter1"></span></p>
+    <div>
+        <p>Amount of Feedbacks submitted: <span id="mappingCounter1"></span></p>
     </div>
+
+    <div class="connect-wallet">Connect Wallet</div>
 
     <h2>Reports</h2>
     <table id="reportTable">
         <thead>
             <tr>
-                <th>Report ID</th>
                 <th>Counter</th>
+                <th>Report ID</th>
                 <th>Submit Block Height</th>
                 <th>Content</th>
-                <th>Solved</th>
                 <th>Comment</th>
                 <th>Rewards</th>
+                <th>Solved</th>
                 <th>Claimed</th>
             </tr>
         </thead>
@@ -56,7 +61,7 @@
 
     <script>
         const endpoint_api = "https://vm.aleo.org/api/testnet3/program/";
-        let selectedContract = ""; // Store the selected contract name
+        let selectedproduct = "guarded_feedback_0_0_2.aleo";
 
         const headers = {
             "Accept": "application/json, text/plain, */*",
@@ -75,101 +80,92 @@
             "sec-ch-ua-platform": "macOS"
         };
 
-        // ...
-function bigIntToString(bigIntValue) {
-  const bytes = [];
-  let tempBigInt = bigIntValue;
+        function bigIntToString(bigIntValue) {
+        const bytes = [];
+        let tempBigInt = bigIntValue;
 
-  while (tempBigInt > BigInt(0)) {
-    const byteValue = Number(tempBigInt & BigInt(255));
-    bytes.push(byteValue);
-    tempBigInt = tempBigInt >> BigInt(8);
-  }
+        while (tempBigInt > BigInt(0)) {
+            const byteValue = Number(tempBigInt & BigInt(255));
+            bytes.push(byteValue);
+            tempBigInt = tempBigInt >> BigInt(8);
+        }
 
-  const decoder = new TextDecoder();
-  const asciiString = decoder.decode(Uint8Array.from(bytes));
-  return asciiString;
-}
+        const decoder = new TextDecoder();
+        const asciiString = decoder.decode(Uint8Array.from(bytes));
+        return asciiString;
+        }
 
         function parseNonStandardJSON(jsonString) {
-    // Replace unquoted keys and values with double-quoted keys and values
-    const fixedJsonString = jsonString
-        .replace(/([a-zA-Z_][a-zA-Z0-9_]*):/g, '"$1":')
-        .replace(/(\d+[a-zA-Z_][a-zA-Z0-9_]*),/g, '"$1",')
-        .replace(/(true|false),/g, '"$1",');
+        // Replace unquoted keys and values with double-quoted keys and values
+        const fixedJsonString = jsonString
+            .replace(/([a-zA-Z_][a-zA-Z0-9_]*):/g, '"$1":')
+            .replace(/(\d+[a-zA-Z_][a-zA-Z0-9_]*),/g, '"$1",')
+            .replace(/(true|false),/g, '"$1",');
 
-    // Parse the JSON string
-    const jsonObject = JSON.parse(fixedJsonString);
+        // Parse the JSON string
+        const jsonObject = JSON.parse(fixedJsonString);
 
-    return jsonObject;
-}
+        return jsonObject;
+        }
 
         // Function to display reports data in a table
-function displayReports(reportsData) {
-    const reportTable = document.getElementById("reportTable");
-    const tbody = reportTable.querySelector("tbody");
+        function displayReports(reportsData) {
+            const reportTable = document.getElementById("reportTable");
+            const tbody = reportTable.querySelector("tbody");
 
-    // Clear existing table rows
-    tbody.innerHTML = "";
+            // Clear existing table rows
+            tbody.innerHTML = "";
 
-    // Loop through the reports data and add rows to the table
-    reportsData.forEach(reportString => {
-        // Parse the non-standard JSON data
-        const report = parseNonStandardJSON(reportString);
+            // Loop through the reports data and add rows to the table
+            reportsData.forEach(reportString => {
+                // Parse the non-standard JSON data
+                const report = parseNonStandardJSON(reportString);
 
-        const row = tbody.insertRow();
-        // Add cells for each field in the struct
-        const idCell = row.insertCell(0);
-        const counterCell = row.insertCell(1);
-        const blockHeightCell = row.insertCell(2);
-        const contentCell = row.insertCell(3);
-        const solvedCell = row.insertCell(4);
-        const commentCell = row.insertCell(5);
-        const rewardsCell = row.insertCell(6);
-        const claimedCell = row.insertCell(7);
+                const row = tbody.insertRow();
+                // Add cells for each field in the struct
+                const counterCell = row.insertCell(0);
+                const idCell = row.insertCell(1);
+                const blockHeightCell = row.insertCell(2);
+                const contentCell = row.insertCell(3);
+                const commentCell = row.insertCell(4);
+                const rewardsCell = row.insertCell(5);
+                const solvedCell = row.insertCell(6);
+                const claimedCell = row.insertCell(7);
 
-        // Set cell values based on the struct fields
-        idCell.textContent = report.id;
-        counterCell.textContent = report.counter;
-        blockHeightCell.textContent = report.block_height;
+                // Set cell values based on the struct fields
+                idCell.textContent = report.id;
+                counterCell.textContent = parseInt(report.counter);
+                blockHeightCell.textContent = parseInt(report.block_height);
 
-        // Check if the "content" field is in the format of a field and convert it
-        if (report.content.endsWith('field')) {
-            const contentValue = bigIntToString(BigInt(report.content.slice(0, -5)));
-            contentCell.textContent = contentValue === '' ? 'N.A.' : contentValue;
-        } else {
-            contentCell.textContent = report.content;
+                // Check if the "content" field is in the format of a field and convert it
+                if (report.content.endsWith('field')) {
+                    const contentValue = bigIntToString(BigInt(report.content.slice(0, -5)));
+                    contentCell.textContent = contentValue === '' ? 'N.A.' : contentValue;
+                } else {
+                    contentCell.textContent = report.content;
+                }
+
+                // Check if the "comment" field is in the format of a field and convert it
+                if (report.comment.endsWith('field')) {
+                    const commentValue = bigIntToString(BigInt(report.comment.slice(0, -5)));
+                    commentCell.textContent = commentValue === '' ? 'N.A.' : commentValue;
+                } else {
+                    commentCell.textContent = report.comment;
+                }
+
+                solvedCell.textContent = report.solved;
+
+                // Display "N.A." for rewards when their value is 0
+                rewardsCell.textContent = report.rewards === '0' ? 'N.A.' : parseInt(report.rewards);
+
+                claimedCell.textContent = report.claimed;
+            });
         }
-
-        // Check if the "comment" field is in the format of a field and convert it
-        if (report.comment.endsWith('field')) {
-            const commentValue = bigIntToString(BigInt(report.comment.slice(0, -5)));
-            commentCell.textContent = commentValue === '' ? 'N.A.' : commentValue;
-        } else {
-            commentCell.textContent = report.comment;
-        }
-
-        solvedCell.textContent = report.solved;
-
-        // Display "N.A." for rewards when their value is 0
-        rewardsCell.textContent = report.rewards === '0' ? 'N.A.' : report.rewards;
-
-        claimedCell.textContent = report.claimed;
-    });
-}
         // Function to fetch data and update the HTML content
         function fetchAndDisplayData() {
-            selectedContract = document.getElementById("contractSelect").value;
-            document.getElementById("selectedContractName").textContent = selectedContract;
-
-            if (!selectedContract) {
-                // Handle the case where no contract is selected
-                document.getElementById("mappingCounter1").textContent = "";
-                return;
-            }
-
+            
             // Fetch the mapping counter for the selected contract
-            fetch(endpoint_api + selectedContract + "/mapping/counter/0u8", { headers, method: "GET" })
+            fetch(endpoint_api + selectedproduct + "/mapping/counter/0u8", { headers, method: "GET" })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -186,7 +182,7 @@ function displayReports(reportsData) {
 
                     // Create async requests for each report using the mapping counter value
                     for (let i = 1; i <= mappingCounter2; i++) {
-                        const reportEndpoint = endpoint_api + selectedContract + `/mapping/reports/${i}u128`;
+                        const reportEndpoint = endpoint_api + selectedproduct + `/mapping/reports/${i}u128`;
                         const reportPromise = fetch(reportEndpoint, { headers, method: "GET" })
                             .then(response => {
                                 if (!response.ok) {
@@ -214,14 +210,6 @@ function displayReports(reportsData) {
                     document.getElementById("mappingCounter1").textContent = 'Error fetching mapping counter or reports.';
                 });
         }
-
-                // Event listener for contract dropdown change
-                document.getElementById("contractSelect").addEventListener("change", function() {
-            selectedContract = this.value;
-            document.getElementById("selectedContractName").textContent = selectedContract;
-            fetchAndDisplayData();
-        });
-
         // Fetch data and update HTML content when the page loads
         fetchAndDisplayData();
     </script>
