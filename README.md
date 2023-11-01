@@ -98,23 +98,23 @@ $ cargo install --path .
 https://vm.aleo.org/api/testnet3/transaction/
 
 deployed at txID:
-https://vm.aleo.org/api/testnet3/transaction/at17fz97878aeu2a5zt5pzxhxaeqlse3x4mgq8zp9q3eekw70v4pc8sa9vg2n
+https://vm.aleo.org/api/testnet3/transaction/at16rk755p3e27t7khhfv5lm3q7kznf4363jl6cd39mx4vdqcc5qcpqtzcxgn
 
 initialize_contract:
 ["aleo124ymewxg2pdkln4kmrx4p28hvjclaq6a9f0zf6skkxa49lwrrvpqur629y"]
-at17cwdu4v0lahs2sch36zfvpqq2tpc0r2exv8r0m43ev34wvpje59qwttkek
+at1farumj0v2nv9a2cu8kmlgj3qh8m757enxndlg3lx85spzuf0nq9sg3yqch
 
 submit:
 input = ["901305943116055393314107185019430750261130105947222795572321109111376field"]
-tx = at1v72se96g50634qsue4ahyqz4892q7ruh95as8k4r228xqtudsuyq49rtx4
+tx = at1z7g5wvyytsgjpky5a4pprkapd4cwu0737sttsc7tw0pk0fz275pqej4hhe
 
 respond:
-input = ["2u128","230869337133923446780812989509191305324637662730303006842384793784117332field","100u64","true"]
-tx = at157rdwjdkmmjxjrh6v6mud4ctx9xhug9v48puqx47p6clgvef0uqs872leu
+input = ["1u128","11055006474104948905283337221010683561853808114499872847field","100u64","false"]
+tx = at1ruq34dnjtkuvp6ytq38r6fg38lj5v9vep8hj8hsa4csdv5gagsrs6kuehw
 
 claim:
-input = ["2u128","13752837266785513203645434234054352649775892694779801526508417648field","100u64"]
-tx = at1pjx27dsdaeyazvkts9hhu6j54qcmnh2gxcqjvk9u7e3knpcewsrq77ezw6
+input = ["901305943116055393314107185019430750261130105947222795572321109111376field","100u64"]
+tx = at1q02z2jauvzy97vu03q8nahykmw8sknw8k3g5fm0wg40quzvf2sfq64ms2y
 
 # TODO
 
