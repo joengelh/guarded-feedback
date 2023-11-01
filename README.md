@@ -117,3 +117,5 @@ input = ["2u128","13752837266785513203645434234054352649775892694779801526508417
 tx = at1pjx27dsdaeyazvkts9hhu6j54qcmnh2gxcqjvk9u7e3knpcewsrq77ezw6
 
 # TODO
+
+- run through claim process

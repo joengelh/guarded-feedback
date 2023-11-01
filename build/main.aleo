@@ -1,4 +1,4 @@
-program guarded_feedback_0_0_2.aleo;
+program guarded_feedback_0_0_3.aleo;
 
 struct Settings:
     owned_by as address;
@@ -49,7 +49,7 @@ mapping account:
 function initialize_contract:
     input r0 as address.public;
     async initialize_contract r0 into r1;
-    output r1 as guarded_feedback_0_0_2.aleo/initialize_contract.future;
+    output r1 as guarded_feedback_0_0_3.aleo/initialize_contract.future;
 
 finalize initialize_contract:
     input r0 as address.public;
@@ -60,7 +60,7 @@ finalize initialize_contract:
 function transfer_ownership:
     input r0 as address.private;
     async transfer_ownership self.caller r0 into r1;
-    output r1 as guarded_feedback_0_0_2.aleo/transfer_ownership.future;
+    output r1 as guarded_feedback_0_0_3.aleo/transfer_ownership.future;
 
 finalize transfer_ownership:
     input r0 as address.public;
@@ -82,7 +82,7 @@ function submit:
     async submit r0 r4 into r6;
     output r4 as field.private;
     output r5 as reported.record;
-    output r6 as guarded_feedback_0_0_2.aleo/submit.future;
+    output r6 as guarded_feedback_0_0_3.aleo/submit.future;
 
 finalize submit:
     input r0 as field.public;
@@ -104,7 +104,7 @@ function respond:
     input r2 as u64.public;
     input r3 as boolean.public;
     async respond r0 r1 r2 r3 self.caller into r4;
-    output r4 as guarded_feedback_0_0_2.aleo/respond.future;
+    output r4 as guarded_feedback_0_0_3.aleo/respond.future;
 
 finalize respond:
     input r0 as u128.public;
@@ -121,38 +121,35 @@ finalize respond:
 
 
 function claim:
-    input r0 as u128.private;
-    input r1 as field.private;
-    input r2 as u64.private;
-    hash.bhp256 self.caller into r3 as field;
-    hash.bhp256 r3 into r4 as field;
-    add r1 r4 into r5;
-    hash.bhp256 r5 into r6 as field;
-    cast self.caller r2 into r7 as token.record;
-    async claim r0 r2 r6 into r8;
-    output r7 as token.record;
-    output r8 as guarded_feedback_0_0_2.aleo/claim.future;
+    input r0 as field.private;
+    input r1 as u64.private;
+    hash.bhp256 self.caller into r2 as field;
+    hash.bhp256 r2 into r3 as field;
+    add r0 r3 into r4;
+    hash.bhp256 r4 into r5 as field;
+    cast self.caller r1 into r6 as token.record;
+    async claim r1 r5 into r7;
+    output r6 as token.record;
+    output r7 as guarded_feedback_0_0_3.aleo/claim.future;
 
 finalize claim:
-    input r0 as u128.public;
-    input r1 as u64.public;
-    input r2 as field.public;
-    get reports[r0] into r3;
-    is.eq r3.id r2 into r4;
+    input r0 as u64.public;
+    input r1 as field.public;
+    get ids[r1] into r2;
+    get reports[r2] into r3;
+    is.eq r3.claimed false into r4;
     assert.eq r4 true;
-    is.eq r3.claimed false into r5;
+    is.eq r3.rewards r0 into r5;
     assert.eq r5 true;
-    is.eq r3.rewards r1 into r6;
-    assert.eq r6 true;
-    cast r3.id r3.counter r3.block_height r3.content r3.solved r3.comment r3.rewards true into r7 as Report;
-    set r7 into reports[r3.counter];
+    cast r3.id r3.counter r3.block_height r3.content r3.solved r3.comment r3.rewards true into r6 as Report;
+    set r6 into reports[r3.counter];
 
 
 function transfer_public:
     input r0 as address.public;
     input r1 as u64.public;
     async transfer_public self.caller r0 r1 into r2;
-    output r2 as guarded_feedback_0_0_2.aleo/transfer_public.future;
+    output r2 as guarded_feedback_0_0_3.aleo/transfer_public.future;
 
 finalize transfer_public:
     input r0 as address.public;
@@ -185,7 +182,7 @@ function transfer_private_to_public:
     cast r0.owner r3 into r4 as token.record;
     async transfer_private_to_public r1 r2 into r5;
     output r4 as token.record;
-    output r5 as guarded_feedback_0_0_2.aleo/transfer_private_to_public.future;
+    output r5 as guarded_feedback_0_0_3.aleo/transfer_private_to_public.future;
 
 finalize transfer_private_to_public:
     input r0 as address.public;
@@ -201,7 +198,7 @@ function transfer_public_to_private:
     cast r0 r1 into r2 as token.record;
     async transfer_public_to_private self.caller r1 into r3;
     output r2 as token.record;
-    output r3 as guarded_feedback_0_0_2.aleo/transfer_public_to_private.future;
+    output r3 as guarded_feedback_0_0_3.aleo/transfer_public_to_private.future;
 
 finalize transfer_public_to_private:
     input r0 as address.public;
@@ -214,7 +211,7 @@ finalize transfer_public_to_private:
 function burn_public:
     input r0 as u64.public;
     async burn_public self.caller r0 into r1;
-    output r1 as guarded_feedback_0_0_2.aleo/burn_public.future;
+    output r1 as guarded_feedback_0_0_3.aleo/burn_public.future;
 
 finalize burn_public:
     input r0 as address.public;

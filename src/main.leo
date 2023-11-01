@@ -1,4 +1,4 @@
-program guarded_feedback_0_0_2.aleo {
+program guarded_feedback_0_0_3.aleo {
 
     struct Settings {
         owned_by: address,
@@ -177,7 +177,6 @@ program guarded_feedback_0_0_2.aleo {
     // Returns:
     // - `token`: A `token` struct representing the user who claimed the rewards.
     transition claim(
-        private number: u128, 
         private content: field, 
         private rewards: u64,
         ) -> token {
@@ -191,12 +190,12 @@ program guarded_feedback_0_0_2.aleo {
             amount: rewards,
         };
         //Payout the claimed amount
-        return new then finalize(number, rewards, id);
+        return new then finalize(rewards, id);
     }
-    finalize claim(public number: u128, public rewards: u64, public id: field)
+    finalize claim(public rewards: u64, public id: field)
     {
+        let number: u128 = Mapping::get(ids, id);
         let report: Report = Mapping::get(reports, number);
-        assert(report.id == id);
         assert(report.claimed == false);
         assert(report.rewards == rewards);
         let new_report: Report = Report {
