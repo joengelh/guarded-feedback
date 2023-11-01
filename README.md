@@ -115,3 +115,10 @@ tx =
 claim:
 input = ["1u128","1field","100u64"]
 tx =
+
+# TODO
+
+- run through claim process
+- review content
+- decide for private or public fees
+- write a workflow process for Alp
