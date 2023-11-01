@@ -1,6 +1,6 @@
 Workflow/ User Story
 
-1. A product owner starts a collaboration with guarded feedback to collect high quality feedback, aswell as to interact with the community and reward efforts. Thereby a smart contract is deployed that manages the feedback given and the rewards payed.
+1. A product owner starts a collaboration with guarded feedback to collect high quality feedback, as well as to interact with the community and reward efforts. Thereby, a smart contract is deployed that manages the feedback given and the rewards paid.
 
 2. A user of a product wishes to give feedback and submits it anonymously on the platform. -> Input: [`Content`]
 
