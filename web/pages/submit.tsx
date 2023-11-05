@@ -45,10 +45,7 @@ export default function Submit() {
   let [status, setStatus] = useState<string | undefined>();
 
   const handleChange = useCallback((event) => {
-    //event.preventDefault();
 
-    console.log("EVENT__", event.target.value);
-    console.log("EVENT__", textAreaValue.length);
 
     const areaField = stringToBigInt(event.target.value);
 
@@ -93,11 +90,9 @@ export default function Submit() {
     if (requestRecords) {
       const records = await requestRecords("credits.aleo");
       for (let i = 0; i < records.length; i++) {
-        console.log(records[i]);
-        console.log(records[i].data.microcredits);
+
         if (records[i].spent === false) {
           let targetRecord = records[i];
-          console.log("targetrecord", targetRecord);
           break;
         }
       }
@@ -106,21 +101,13 @@ export default function Submit() {
 
   const onFeedback = async () => {
     if (!publicKey) throw new WalletNotConnectedError();
-    console.log("PUBLICK", publicKey);
     // The record here is an output from the Requesting Records above
-
-    console.log("CONTENTAREA", contentArea.current.value);
-    console.log(
-      "CONTENTAREA",
-      stringToBigInt(contentArea.current.value) + "field"
-    );
 
     const input = stringToBigInt(contentArea.current.value) + "field";
 
     const inputs = [input];
 
     const fee = 367_178; // This will fail if fee is not set high enough
-    console.log("publicKey", publicKey);
     const aleoTransaction = Transaction.createTransaction(
       publicKey,
       WalletAdapterNetwork.Testnet,
@@ -216,7 +203,7 @@ export default function Submit() {
             </div>
           </>
         ) : (
-          <p className="text-white">download leo wallet to see the form</p>
+          <p className="text-white">Please connect your wallet to give feedback.</p>
         )}{" "}
       </main>
     </div>

@@ -126,14 +126,12 @@ export default function Home() {
   } = useWallet();
 
   const openRespondPanel = async (number) => {
-    console.log("RESPONDING TO ID", number);
     setReportId(number);
     setOpen(true);
   };
 
   const onRespond = async () => {
     if (!publicKey) throw new WalletNotConnectedError();
-    console.log("PUBLICK", publicKey);
     const contentField = stringToBigInt(contentAreaRef.current.value) + "field";
 
     const awardField = awardRef.current.value + "u64";
@@ -141,7 +139,6 @@ export default function Home() {
     const inputs = [reportId, contentField, awardField, enabled.toString()];
 
     const fee = 168_526; // This will fail if fee is not set high enough
-    console.log("publicKey", publicKey);
     const aleoTransaction = Transaction.createTransaction(
       publicKey,
       WalletAdapterNetwork.Testnet,
