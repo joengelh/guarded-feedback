@@ -8,17 +8,10 @@ import React, { FC, useMemo } from "react";
 import { WalletProvider } from "@demox-labs/aleo-wallet-adapter-react";
 import { WalletModalProvider } from "@demox-labs/aleo-wallet-adapter-reactui";
 import { LeoWalletAdapter } from "@demox-labs/aleo-wallet-adapter-leo";
-/*
-import { WalletProvider } from "../wallet/aleo/packages/core/react";
-import { WalletModalProvider } from "../wallet/aleo/packages/ui/src";
-import { LeoWalletAdapter } from "../wallet/aleo/packages/wallets/leo";
-*/
-
-
 import {
   DecryptPermission,
   WalletAdapterNetwork,
-} from "../wallet/aleo/packages/core/base";
+} from "@demox-labs/aleo-wallet-adapter-base";
 import Layout  from '../components/layout/Layout'
 
 // Default styles that can be overridden by your app
