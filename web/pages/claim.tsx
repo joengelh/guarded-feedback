@@ -159,32 +159,30 @@ export default function Claim() {
             <div className="mt-10 grid max-w-xl grid-cols-1 gap-8 text-base leading-7 text-gray-700 lg:max-w-none lg:grid-cols-2">
               <div>
                 <p>
-                  Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget
-                  risus enim. Mattis mauris semper sed amet vitae sed turpis id.
-                  Id dolor praesent donec est. Odio penatibus risus viverra
-                  tellus varius sit neque erat velit. Faucibus commodo massa
-                  rhoncus, volutpat. Dignissim sed eget risus enim. Mattis
-                  mauris semper sed amet vitae sed turpis id.
+                  In this pivotal function reserved for those who have submitted feedback and recieved a comment on it.
+                  Here, product owners engage directly with community members, 
+                  making them shareholdes instead of stakeholders.
                 </p>
                 <p className="mt-8">
-                  Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                  duis odio id et. Id blandit molestie auctor fermentum
-                  dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                  varius vulputate et ultrices hac adipiscing egestas.
+                  Instead of processing large payments using traditional, slow or in many parts
+                  of the world simply unaccessible means of payment, here cryptocurrency and the ease of
+                  transacting with them are leveraged.
+                  Uncertainty prevails in conventional setups,
+                  leaving users in the dark about the financial incentives offered by the product owners.
+                  Guarded Feedback revolutionizes this experience,
+                  making it public wich feedback has recieved and claimed a micropayment, without
+                  risking the submitters pricacy.
                 </p>
               </div>
               <div>
                 <p>
-                  Erat pellentesque dictumst ligula porttitor risus eget et
-                  eget. Ultricies tellus felis id dignissim eget. Est augue
-                  maecenas risus nulla ultrices congue nunc tortor.
+                  Submitters' privacy is paramount, and thus, their identities are protected by not being stored on-chain.
                 </p>
                 <p className="mt-8">
-                  Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                  duis odio id et. Id blandit molestie auctor fermentum
-                  dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                  varius vulputate et ultrices hac adipiscing egestas. Iaculis
-                  convallis ac tempor et ut. Ac lorem vel integer orci.
+                  To ensure fairness, users are required to claim their rewards independently. 
+                  This step enables contributors to receive their well-deserved recognition while preserving their privacy. 
+                  By seamlessly integrating blockchain technology, Guarded Feedback ensures a secure, 
+                  transparent, and rewarding experience for all participants.
                 </p>
               </div>
             </div>

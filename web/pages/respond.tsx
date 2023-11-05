@@ -174,32 +174,27 @@ export default function Home() {
             <div className="mt-10 grid max-w-xl grid-cols-1 gap-8 text-base leading-7 text-gray-700 lg:max-w-none lg:grid-cols-2">
               <div>
                 <p>
-                  Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget
-                  risus enim. Mattis mauris semper sed amet vitae sed turpis id.
-                  Id dolor praesent donec est. Odio penatibus risus viverra
-                  tellus varius sit neque erat velit. Faucibus commodo massa
-                  rhoncus, volutpat. Dignissim sed eget risus enim. Mattis
-                  mauris semper sed amet vitae sed turpis id.
+                  This function is limited to be used by the product owner and owner of the contract.
+                  Responding to feedback is meant to create understanding for the issue, share the work that
+                  has been done or will be done to address the issue or simply to say "Thanks" to the submitter.
                 </p>
                 <p className="mt-8">
-                  Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                  duis odio id et. Id blandit molestie auctor fermentum
-                  dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                  varius vulputate et ultrices hac adipiscing egestas.
+                  This feature addresses the general lack of transparency into feedback processes
+                  users experience where for example it might be totally unclear how and if the 
+                  issue is being addresses or if anyone has actually looked at it.
                 </p>
               </div>
               <div>
                 <p>
-                  Erat pellentesque dictumst ligula porttitor risus eget et
-                  eget. Ultricies tellus felis id dignissim eget. Est augue
-                  maecenas risus nulla ultrices congue nunc tortor.
+                  Furthermore, the product owner has the opportunity to attach a micropayment to 
+                  the feedback, rewarding the author for exceptional workand effort or set a general
+                  predicament of gratitude and participation for users.
+                  As the rewards payment is public, the community has transparency on the amount of money that is being
+                  payed and thus can be financially motivated beyond product quality increases.
                 </p>
                 <p className="mt-8">
-                  Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                  duis odio id et. Id blandit molestie auctor fermentum
-                  dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                  varius vulputate et ultrices hac adipiscing egestas. Iaculis
-                  convallis ac tempor et ut. Ac lorem vel integer orci.
+                  Users can then claim the reward that was put up by the product owner later. This step is 
+                  requred as the blockchain does not store the author of the feedback for privacy reasons.
                 </p>
               </div>
             </div>
