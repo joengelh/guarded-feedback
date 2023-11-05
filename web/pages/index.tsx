@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import { bigIntToString, parseNonStandardJSON } from "../utils/utils";
-import { endpoint_api, selectedproduct, headers } from "../constants/constants";
+import { endpoint_api, headers } from "../constants/constants";
 import React, {
   useState,
   useEffect,
@@ -71,7 +71,6 @@ export default function Home() {
       mappingCounter = parseInt(
         mappingCounter.replace(/"/g, "").replace("u128", "")
       ); // Remove double quotes for the counter query
-      console.log("COUNTER", mappingCounter);
       let reportsData = [];
 
       for (let i = 1; i <= mappingCounter; i++) {

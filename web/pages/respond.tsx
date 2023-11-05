@@ -7,7 +7,7 @@ import {
   generateBadge,
   removeType,
 } from "../utils/utils";
-import { endpoint_api, selectedproduct, headers } from "../constants/constants";
+import { endpoint_api, headers } from "../constants/constants";
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";

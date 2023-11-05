@@ -1,6 +1,5 @@
 
 export const endpoint_api = "https://vm.aleo.org/api/testnet3/program/";
-export const selectedproduct = "guarded_feedback_0_0_2.aleo";
 
 export const headers = {
     "Accept": "application/json, text/plain, */*",

@@ -6,7 +6,7 @@ import {
   generateBadge,
   removeType,
 } from "../utils/utils";
-import { endpoint_api, selectedproduct, headers } from "../constants/constants";
+import { endpoint_api, headers } from "../constants/constants";
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
@@ -87,7 +87,6 @@ export default function Claim() {
       mappingCounter = parseInt(
         mappingCounter.replace(/"/g, "").replace("u128", "")
       ); // Remove double quotes for the counter query
-      console.log("COUNTER", mappingCounter);
       let reportsData = [];
 
       for (let i = 1; i <= mappingCounter; i++) {
@@ -106,7 +105,6 @@ export default function Claim() {
         });
         reportsData.push(parseNonStandardJSON(reportData));
       }
-      console.log("reportsData", reportsData);
       setReports(reportsData);
     }
     fetchData();
@@ -123,12 +121,10 @@ export default function Claim() {
 
   const onClaim = async (content, reward) => {
     if (!publicKey) throw new WalletNotConnectedError();
-    console.log("PUBLICK", publicKey);
 
     const inputs = [content, reward];
 
     const fee = 171_596; // This will fail if fee is not set high enough
-    console.log("publicKey", publicKey);
     const aleoTransaction = Transaction.createTransaction(
       publicKey,
       WalletAdapterNetwork.Testnet,
