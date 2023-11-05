@@ -132,7 +132,7 @@ export default function Claim() {
       "claim",
       inputs,
       fee,
-      false
+      process.env.NEXT_PUBLIC_PRIVATE_FEE
     );
 
     try {

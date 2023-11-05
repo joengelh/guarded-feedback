@@ -115,7 +115,7 @@ export default function Submit() {
       "submit",
       inputs,
       fee,
-      false
+      process.env.NEXT_PUBLIC_PRIVATE_FEE
     );
 
     try {

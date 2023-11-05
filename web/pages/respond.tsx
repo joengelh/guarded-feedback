@@ -146,7 +146,7 @@ export default function Home() {
       "respond",
       inputs,
       fee,
-      false
+      process.env.NEXT_PUBLIC_PRIVATE_FEE
     );
 
     try {
