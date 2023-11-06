@@ -60,35 +60,11 @@ export default function Home() {
           );
     
         if (shouldSetValue) {
-          console.log("SETVALUE");
           setTextAreaValue(event.target.value);
         } else {
-          console.log("DONT SET VALUE");
-    
           event.preventDefault();
         }
       };
-
-  const handleChange2 = useCallback((event) => {
-console.log("event",event.target.value);
-
-    const areaField = stringToBigInt(event.target.value);
-
-    const shouldSetValue =
-      areaField <=
-      BigInt(
-        "8444461749428370424248824938781546531375899335154063827935233455917409239040"
-      );
-
-    if (shouldSetValue) {
-      console.log("SETVALUE");
-      setTextAreaValue(event.target.value);
-    } else {
-      console.log("DONT SET VALUE");
-
-      event.preventDefault();
-    }
-  });
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | undefined;
@@ -128,7 +104,7 @@ console.log("event",event.target.value);
 
       let reportsData = [];
 
-      for (let i = 25; i <= mappingCounter; i++) {
+      for (let i = 1; i <= mappingCounter; i++) {
         const reportEndpoint =
           endpoint_api +
           process.env.NEXT_PUBLIC_PROGRAM_NAME +
