@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const wallets = useMemo(
     () => [
       new LeoWalletAdapter({
-        appName: "Leo Demo App",
+        appName: "Guaded Feedback Aleo App",
       }),
     ],
     []

@@ -8,7 +8,7 @@ import {
   removeType,
 } from "../utils/utils";
 import { endpoint_api, headers } from "../constants/constants";
-import React, { useState, useEffect, useRef, Fragment } from "react";
+import React, { useState, useEffect, useRef, Fragment, useCallback } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 const inter = Inter({ subsets: ["latin"] });
@@ -17,18 +17,7 @@ import { Switch } from "@headlessui/react";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-const transactions = [
-  {
-    id: "AAPS0L",
-    company: "Chase & Co.",
-    share: "CAC",
-    commission: "+$4.37",
-    price: "$3,509.00",
-    quantity: "12.00",
-    netAmount: "$4,397.00",
-  },
-  // More transactions...
-];
+
 import { useWallet } from "@demox-labs/aleo-wallet-adapter-react";
 
 import {
@@ -41,6 +30,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [reportId, setReportId] = useState(false);
+  const [textAreaValue, setTextAreaValue] = useState("");
 
   let [transactionId, setTransactionId] = useState<string | undefined>();
   let [status, setStatus] = useState<string | undefined>();
@@ -55,6 +45,50 @@ export default function Home() {
     }
     setStatus(status);
   };
+
+
+  const handleChange = (event) => {
+
+    const finalEventValue = event.target.value+event.key;
+    
+        const areaField = stringToBigInt(finalEventValue);
+    
+        const shouldSetValue =
+          areaField <=
+          BigInt(
+            "8444461749428370424248824938781546531375899335154063827935233455917409239040"
+          );
+    
+        if (shouldSetValue) {
+          console.log("SETVALUE");
+          setTextAreaValue(event.target.value);
+        } else {
+          console.log("DONT SET VALUE");
+    
+          event.preventDefault();
+        }
+      };
+
+  const handleChange2 = useCallback((event) => {
+console.log("event",event.target.value);
+
+    const areaField = stringToBigInt(event.target.value);
+
+    const shouldSetValue =
+      areaField <=
+      BigInt(
+        "8444461749428370424248824938781546531375899335154063827935233455917409239040"
+      );
+
+    if (shouldSetValue) {
+      console.log("SETVALUE");
+      setTextAreaValue(event.target.value);
+    } else {
+      console.log("DONT SET VALUE");
+
+      event.preventDefault();
+    }
+  });
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | undefined;
@@ -94,7 +128,7 @@ export default function Home() {
 
       let reportsData = [];
 
-      for (let i = 1; i <= mappingCounter; i++) {
+      for (let i = 25; i <= mappingCounter; i++) {
         const reportEndpoint =
           endpoint_api +
           process.env.NEXT_PUBLIC_PROGRAM_NAME +
@@ -137,8 +171,9 @@ export default function Home() {
     const awardField = awardRef.current.value + "u64";
 
     const inputs = [reportId, contentField, awardField, enabled.toString()];
-
-    const fee = 168_526; // This will fail if fee is not set high enough
+console.log("NEXT_PUBLIC_PRIVATE_FEE",process.env.NEXT_PUBLIC_PRIVATE_FEE);
+console.log("INPUTS",inputs);
+    const fee = 178_526; // This will fail if fee is not set high enough
     const aleoTransaction = Transaction.createTransaction(
       publicKey,
       WalletAdapterNetwork.Testnet,
@@ -352,6 +387,11 @@ export default function Home() {
                                     defaultValue={""}
                                     placeholder="enter your comment"
                                     ref={contentAreaRef}
+                                    onKeyPress={(e) => {
+                                      handleChange(e);
+                                    }}
+
+
                                   />
                                 </div>
                               </div>

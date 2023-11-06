@@ -46,8 +46,10 @@ export default function Submit() {
 
   const handleChange = useCallback((event) => {
 
-
-    const areaField = stringToBigInt(event.target.value);
+    const finalEventValue = event.target.value+event.key;
+    
+        const areaField = stringToBigInt(finalEventValue);
+    
 
     const shouldSetValue =
       areaField <=

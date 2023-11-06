@@ -197,27 +197,27 @@ export default function Home() {
         <tbody className="divide-y divide-gray-200 bg-white">
 
           <tr>
-            <th>Counter</th>
-            <th>Report ID</th>
-            <th>Submit Block Height</th>
-            <th>Content</th>
-            <th>Comment</th>
-            <th>Rewards</th>
-            <th>Solved</th>
-            <th>Claimed</th>
+            <th className="text-black">Counter</th>
+            <th className="text-black">Report ID</th>
+            <th className="text-black">Submit Block Height</th>
+            <th className="text-black">Content</th>
+            <th className="text-black">Comment</th>
+            <th className="text-black">Rewards</th>
+            <th className="text-black">Solved</th>
+            <th className="text-black">Claimed</th>
           </tr>
          
           {reports &&
             reports.map((item) => (
               <tr key={item.counter}>
-                <td>{item.counter}</td>
-                <td width={"250px"}><p className="truncate line-clamp-1">{item.id}</p></td>
-                <td>{item.block_height}</td>
-                <td>{bigIntToString(BigInt(item.content.slice(0, -5)))}</td>
-                <td>{bigIntToString(BigInt(item.comment.slice(0, -5)))}</td>
-                <td>{item.rewards}</td>
-                <td>{item.solved}</td>
-                <td>{item.claimed.toString()}</td>
+                <td className="text-black">{item.counter}</td>
+                <td width={"250px"}><p className="truncate line-clamp-1 text-black">{item.id}</p></td>
+                <td className="text-black">{item.block_height}</td>
+                <td className="text-black">{bigIntToString(BigInt(item.content.slice(0, -5)))}</td>
+                <td className="text-black">{bigIntToString(BigInt(item.comment.slice(0, -5)))}</td>
+                <td className="text-black">{item.rewards}</td>
+                <td className="text-black">{item.solved}</td>
+                <td className="text-black">{item.claimed.toString()}</td>
               </tr>
             ))}
             </tbody>
