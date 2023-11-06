@@ -151,8 +151,7 @@ export default function Submit() {
                   Submit your feedback
                 </h2>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
-                  This information will be displayed publicly so be careful what
-                  you share.
+                  This information will be displayed publicly and can not be deleted or edited after being submitted.
                 </p>
 
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -160,7 +159,7 @@ export default function Submit() {
                     <label
                       htmlFor="about"
                       className="block text-sm font-medium leading-6 text-white">
-                      Enter your Feedback
+                      This text will be stored on-chain encoded as a field type, limiting the strings size.
                     </label>
                     <div className="mt-2">
                       <textarea
@@ -176,7 +175,7 @@ export default function Submit() {
                       />
                     </div>
                     <p className="mt-3 text-sm leading-6 text-gray-400">
-                      Enter your Feedback
+                      Thank you for submitting your experiences and ideas.
                     </p>
                   </div>
                 </div>
@@ -200,7 +199,7 @@ export default function Submit() {
               <button
                 className="rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
                 onClick={() => onFeedback()}>
-                Save
+                Submit
               </button>
             </div>
           </>
