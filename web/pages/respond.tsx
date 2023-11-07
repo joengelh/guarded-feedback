@@ -116,9 +116,13 @@ export default function Home() {
           if (!response.ok) {
             throw new Error(`Network response for report ${i} was not ok`);
           }
+          
           return response.json(); // Parse the JSON data here
         });
+        //setReports(reportsData);
+
         reportsData.push(parseNonStandardJSON(reportData));
+
       }
 
       setReports(reportsData);
@@ -147,12 +151,7 @@ export default function Home() {
     const awardField = awardRef.current.value + "u64";
 
     const inputs = [reportId, contentField, awardField, enabled.toString()];
-console.log("NEXT_PUBLIC_PRIVATE_FEE",process.env.NEXT_PUBLIC_PRIVATE_FEE);
-console.log("INPUTS",inputs);
 
-console.log("TRUE_OR_FALSE");
-console.log((process.env.NEXT_PUBLIC_PRIVATE_FEE === "true")); // true / false
-console.log("//////TRUE_OR_FALSE");
 
 
     const fee = 178_526; // This will fail if fee is not set high enough

@@ -64,7 +64,13 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   //fetchAndDisplayData();
   const [reports, setReports] = useState(null);
-
+  useEffect(() => {
+    async function getLoader() {
+      const { ripples } = await import("ldrs");
+      ripples.register();
+    }
+    getLoader();
+  }, []);
   useEffect(() => {
     async function fetchData() {
       const response = await fetch(

@@ -112,9 +112,7 @@ export default function Claim() {
     if (!publicKey) throw new WalletNotConnectedError();
 
     const inputs = [content, reward];
-    console.log("TRUE_OR_FALSE");
-    console.log((process.env.NEXT_PUBLIC_PRIVATE_FEE === "true")); // true / false
-    console.log("//////TRUE_OR_FALSE");
+
 
     const fee = 271_596; // This will fail if fee is not set high enough
     const aleoTransaction = Transaction.createTransaction(
