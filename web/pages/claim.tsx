@@ -16,18 +16,7 @@ import { Switch } from "@headlessui/react";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-const transactions = [
-  {
-    id: "AAPS0L",
-    company: "Chase & Co.",
-    share: "CAC",
-    commission: "+$4.37",
-    price: "$3,509.00",
-    quantity: "12.00",
-    netAmount: "$4,397.00",
-  },
-  // More transactions...
-];
+
 import { useWallet } from "@demox-labs/aleo-wallet-adapter-react";
 
 import {
@@ -123,8 +112,11 @@ export default function Claim() {
     if (!publicKey) throw new WalletNotConnectedError();
 
     const inputs = [content, reward];
+    console.log("TRUE_OR_FALSE");
+    console.log((process.env.NEXT_PUBLIC_PRIVATE_FEE === "true")); // true / false
+    console.log("//////TRUE_OR_FALSE");
 
-    const fee = 171_596; // This will fail if fee is not set high enough
+    const fee = 271_596; // This will fail if fee is not set high enough
     const aleoTransaction = Transaction.createTransaction(
       publicKey,
       WalletAdapterNetwork.Testnet,

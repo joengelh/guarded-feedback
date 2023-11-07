@@ -149,6 +149,12 @@ export default function Home() {
     const inputs = [reportId, contentField, awardField, enabled.toString()];
 console.log("NEXT_PUBLIC_PRIVATE_FEE",process.env.NEXT_PUBLIC_PRIVATE_FEE);
 console.log("INPUTS",inputs);
+
+console.log("TRUE_OR_FALSE");
+console.log((process.env.NEXT_PUBLIC_PRIVATE_FEE === "true")); // true / false
+console.log("//////TRUE_OR_FALSE");
+
+
     const fee = 178_526; // This will fail if fee is not set high enough
     const aleoTransaction = Transaction.createTransaction(
       publicKey,

@@ -1,8 +1,13 @@
 
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { bigIntToString, parseNonStandardJSON } from "../utils/utils";
-import { endpoint_api, headers } from "../constants/constants";
+import {
+  bigIntToString,
+  parseNonStandardJSON,
+  stringToBigInt,
+  generateBadge,
+  removeType,
+} from "../utils/utils";import { endpoint_api, headers } from "../constants/constants";
 import React, {
   useState,
   useEffect,
@@ -192,36 +197,93 @@ export default function Home() {
 
       <main
         className={`flex flex-col items-center justify-between p-24 ${inter.className}`}>
-          <div>
-        <table>
-        <tbody className="divide-y divide-gray-200 bg-white">
 
-          <tr>
-            <th className="text-black">Counter</th>
-            <th className="text-black">Report ID</th>
-            <th className="text-black">Submit Block Height</th>
-            <th className="text-black">Content</th>
-            <th className="text-black">Comment</th>
-            <th className="text-black">Rewards</th>
-            <th className="text-black">Solved</th>
-            <th className="text-black">Claimed</th>
-          </tr>
-         
-          {reports &&
-            reports.map((item) => (
-              <tr key={item.counter}>
-                <td className="text-black">{item.counter}</td>
-                <td width={"250px"}><p className="truncate line-clamp-1 text-black">{item.id}</p></td>
-                <td className="text-black">{item.block_height}</td>
-                <td className="text-black">{bigIntToString(BigInt(item.content.slice(0, -5)))}</td>
-                <td className="text-black">{bigIntToString(BigInt(item.comment.slice(0, -5)))}</td>
-                <td className="text-black">{item.rewards}</td>
-                <td className="text-black">{item.solved}</td>
-                <td className="text-black">{item.claimed.toString()}</td>
-              </tr>
-            ))}
-            </tbody>
-        </table>
+<div className="mt-8 flow-root max-w-7xl mx-auto ">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead>
+                  <tr className="p-8">
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-0">
+                      Counter
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-black">
+                      Content
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-black">
+                      Comment
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-black">
+                      Rewards
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-black">
+                      Solved
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-black">
+                      Claimed
+                    </th>
+
+          
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {reports ? (
+                    reports.map((item) => (
+                      <tr key={item.counter} className="p-8">
+                        <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 ">
+                          {removeType(item.counter)}
+                        </td>
+                        <td className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">
+                          {bigIntToString(BigInt(item.content.slice(0, -5)))}
+                        </td>
+                        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+                          {bigIntToString(BigInt(item.comment.slice(0, -5)))}
+                        </td>
+                        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                          {removeType(item.rewards)}
+                        </td>
+                        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 ">
+                          {generateBadge(item.solved)}
+                        </td>
+                        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                          {generateBadge(item.claimed.toString())}
+                        </td>
+              
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="p-8">
+                      <td colSpan={6}>
+                        <div className="flex mx-auto p-8 text-center align-center w-full content-center	">
+                          <div className="mt-0.5 pr-2">
+                            <l-ripples color="black" size="20"></l-ripples>
+                          </div>
+                          LOADING
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+          <div>
+
         </div>
       </main>
     </>
