@@ -1,5 +1,5 @@
 
-export const endpoint_api = "https://vm.aleo.org/api/testnet3/program/";
+export const endpoint_api = "https://api.explorer.aleo.org/v1/testnet3/program/";
 
 export const headers = {
     "Accept": "application/json, text/plain, */*",
