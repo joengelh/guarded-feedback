@@ -172,7 +172,7 @@ export default function Home() {
     <div className="bg-gray-900 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Add transparency, financial motivation and privacy to giving feedback</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Add transparency, financial motivation and privacy to feedback</h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
           Guarded Feedback allows businesses to gather more valuable reports on their products and services, eventually leveraging their community to filter the reports. Furthermore, it streamlines the process of submitting such reports and enables micropayments to the contributors, making them shareholders in the process and thus increasing report quality. All the while prioritizing user privacy and incentivizing meaningful interactions between companies and their users.
           </p>
