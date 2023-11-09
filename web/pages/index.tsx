@@ -175,7 +175,8 @@ export default function Home() {
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Add transparency, financial motivation and privacy to giving feedback</h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
           Guarded Feedback allows businesses to gather more valuable reports on their products and services, eventually leveraging their community to filter the reports. Furthermore, it streamlines the process of submitting such reports and enables micropayments to the contributors, making them shareholders in the process and thus increasing report quality. All the while prioritizing user privacy and incentivizing meaningful interactions between companies and their users.
-
+          </p>
+          <p className="mt-6 text-lg leading-8 text-gray-300">
           This innovation is essential because it addresses the long-standing challenges posed by opaque and unsatisfactory bug reporting systems, which have often left users feeling frustrated and disengaged. In many existing systems, users are uncertain about the fate of their submitted bug reports, with little to no visibility into the process, leading to a lack of trust and satisfaction.
           </p>
         </div>
