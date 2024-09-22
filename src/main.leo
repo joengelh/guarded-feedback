@@ -50,11 +50,11 @@ program guarded_feedback_0_0_3.aleo {
     // Parameters:
     // - `new_owner` (Type: `address`): The address of the new owner to whom the DApp ownership will be transferred.
     //
-    transition initialize_contract(public new_owner: address) {
-        return then finalize(new_owner);
+    async transition initialize_contract(public new_owner: address) -> Future {
+        return finalize_initialize_contract(new_owner);
     }
 
-    finalize initialize_contract(public new_owner: address) {
+    async function finalize_initialize_contract(public new_owner: address) {
         // Check if the app has been configured. If it has been, check if its the owner
         let new_settings: Settings = Settings {
             owned_by: new_owner,
@@ -62,11 +62,11 @@ program guarded_feedback_0_0_3.aleo {
         Mapping::set(settings, 0u8, new_settings);
     }
 
-    transition transfer_ownership(new_owner: address) {
+    async transition transfer_ownership(new_owner: address) -> Future {
         let sender: address = self.caller;
-        return then finalize(sender, new_owner);
+        return finalize_transfer_ownership(sender, new_owner);
     }
-    finalize transfer_ownership(public sender: address, public new_owner: address) {
+    async function finalize_transfer_ownership(public sender: address, public new_owner: address) {
         // Check if the app has been configured. If it has been, check if its the owner
         let current_settings: Settings = Mapping::get(settings, 0u8);
         assert(current_settings.owned_by == sender);
@@ -85,9 +85,9 @@ program guarded_feedback_0_0_3.aleo {
     //
     // Returns:
     // - `(field, reported)`: A tuple containing the generated ID (`field`) and a `reported` struct representing the submission report.
-    transition submit(
+    async transition submit(
         private content: field,
-    ) -> (field, reported) {
+    ) -> (field, reported, Future) {
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
         let key_stretching: field = BHP256::hash_to_field((intermediary_hash));
         let id: field = BHP256::hash_to_field(content.add(key_stretching));
@@ -95,9 +95,9 @@ program guarded_feedback_0_0_3.aleo {
             owner: self.caller,
             id: id,
         };
-        return (id, new) then finalize(content, id);
+        return (id, new, finalize_submit(content, id));
     }
-    finalize submit(public content: field,
+    async function finalize_submit(public content: field,
     id: field,)
     {
         // Check if the specific id already exists
@@ -130,16 +130,16 @@ program guarded_feedback_0_0_3.aleo {
     // - `comment` (Type: `field`): A field containing comments or additional information related to the response.
     // - `rewards` (Type: `u64`): The rewards, if any, offered for responding to the report.
     // - `solved` (Type: `bool`): A boolean value indicating whether the issue has been solved.
-    transition respond(
+    async transition respond(
         public number: u128,
         public comment: field,
         public rewards: u64,
         public solved: bool,
-    ) {
+    ) -> Future {
         let sender: address = self.caller;
-        return then finalize(number, comment, rewards, solved, sender);
+        return finalize_respond(number, comment, rewards, solved, sender);
     }
-    finalize respond(
+    async function finalize_respond(
         public number: u128,
         public comment: field,
         public rewards: u64,
@@ -176,10 +176,10 @@ program guarded_feedback_0_0_3.aleo {
     //
     // Returns:
     // - `token`: A `token` struct representing the user who claimed the rewards.
-    transition claim(
+    async transition claim(
         private content: field, 
         private rewards: u64,
-        ) -> token {
+        ) -> (token, Future) {
         // create a proof that this person is the original caller
         // get the content used originally
         let intermediary_hash: field = BHP256::hash_to_field(self.caller);
@@ -190,9 +190,9 @@ program guarded_feedback_0_0_3.aleo {
             amount: rewards,
         };
         //Payout the claimed amount
-        return new then finalize(rewards, id);
+        return (new, finalize_claim(rewards, id));
     }
-    finalize claim(public rewards: u64, public id: field)
+    async function finalize_claim(public rewards: u64, public id: field)
     {
         let number: u128 = Mapping::get(ids, id);
         let report: Report = Mapping::get(reports, number);
@@ -212,12 +212,12 @@ program guarded_feedback_0_0_3.aleo {
     }
 
     /* Transfer */
-    transition transfer_public(public receiver: address, public amount: u64) {
+    async transition transfer_public(public receiver: address, public amount: u64) -> Future {
         // Transfer the tokens publicly, by invoking the computation on-chain.
-        return then finalize(self.caller, receiver, amount);
+        return finalize_transfer_public(self.caller, receiver, amount);
     }
 
-    finalize transfer_public(public sender: address, public receiver: address, public amount: u64) {
+    async function finalize_transfer_public(public sender: address, public receiver: address, public amount: u64) {
         // Decrements `account[sender]` by `amount`.
         // If `account[sender]` does not exist, it will be created.
         // If `account[sender] - amount` underflows, `transfer_public` is reverted.
@@ -256,7 +256,7 @@ program guarded_feedback_0_0_3.aleo {
 
     // The function `transfer_private_to_public` turns a specified token amount from a token record into public tokens for the specified receiver.
     // This function preserves privacy for the sender's record, however it publicly reveals the token receiver and the token amount.
-    transition transfer_private_to_public(sender: token, public receiver: address, public amount: u64) -> token {
+    async transition transfer_private_to_public(sender: token, public receiver: address, public amount: u64) -> (token, Future) {
         // Checks the given token record has a sufficient token amount.
         // This `sub` operation is safe, and the proof will fail if an underflow occurs.
         // `difference` holds the change amount for the caller.
@@ -270,10 +270,10 @@ program guarded_feedback_0_0_3.aleo {
 
         // Output the sender's change record.
         // Increment the token amount publicly for the token receiver.
-        return remaining then finalize(receiver, amount);
+        return (remaining, finalize_transfer_private_to_public(receiver, amount));
     }
 
-    finalize transfer_private_to_public(public receiver: address, public amount: u64) {
+    async function finalize_transfer_private_to_public(public receiver: address, public amount: u64) {
         // Increments `account[receiver]` by `amount`.
         // If `account[receiver]` does not exist, it will be created.
         // If `account[receiver] + amount` overflows, `transfer_private_to_public` is reverted.
@@ -283,7 +283,7 @@ program guarded_feedback_0_0_3.aleo {
 
     // The function `transfer_public_to_private` turns a specified token amount from `account` into a token record for the specified receiver.
     // This function preserves privacy for the receiver's record, however it publicly reveals the caller and the specified token amount.
-    transition transfer_public_to_private(public receiver: address, public amount: u64) -> token {
+    async transition transfer_public_to_private(public receiver: address, public amount: u64) -> (token, Future) {
         // Produces a token record for the token receiver.
         let transferred: token = token {
             owner: receiver,
@@ -292,10 +292,10 @@ program guarded_feedback_0_0_3.aleo {
 
         // Output the receiver's record.
         // Decrement the token amount of the caller publicly.
-        return transferred then finalize(self.caller, amount);
+        return (transferred, finalize_transfer_public_to_private(self.caller, amount));
     }
 
-    finalize transfer_public_to_private(public sender: address, public amount: u64) {
+    async function finalize_transfer_public_to_private(public sender: address, public amount: u64) {
         // Decrements `account[sender]` by `amount`.
         // If `account[sender]` does not exist, it will be created.
         // If `account[sender] - amount` underflows, `transfer_public_to_private` is reverted.
@@ -303,11 +303,11 @@ program guarded_feedback_0_0_3.aleo {
         Mapping::set(account, sender, sender_amount - amount);
     }
 
-    transition burn_public(public amount: u64) {
-        return then finalize(self.caller, amount);
+    async transition burn_public(public amount: u64) -> Future {
+        return finalize_burn_public(self.caller, amount);
     }
     
-    finalize burn_public(public sender: address, public amount: u64) {
+    async function finalize_burn_public(public sender: address, public amount: u64) {
         // Decrements `account[sender]` by `amount`.
         // If `account[sender]` does not exist, it will be created.
         // If `account[sender] - amount` underflows, `transfer_public_to_private` is reverted.
